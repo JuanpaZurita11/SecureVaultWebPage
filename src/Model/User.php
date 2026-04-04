@@ -5,13 +5,13 @@ namespace App\Model;
 
 class User{
   public int $id;
-  public string $name;
-  public string $surname;
-  public string $username;
-  public string $email;
-  public string $password;
-  public string $publicKey;
-  public string $privateKey;
+  public string $nombre;
+  public string $apellido;
+  public string $usuario;
+  public string $correo;
+  public string $contrasena;
+  public string $llave_public;
+  public string $llave_privada;
 
 
 };

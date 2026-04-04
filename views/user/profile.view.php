@@ -1,23 +1,8 @@
 <?php
 // --- SIMULACIÓN DE DATOS DEL PERFIL ---
-if (!isset($perfil)) {
-    $perfil = [
-        'nombre' => 'Alice',
-        'apellido' => 'Smith',
-        'email' => 'alice.smith@ejemplo.com',
-        'password' => 'ClaveSecreta123!',
-        'llave_publica' => "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzqX...\n-----END PUBLIC KEY-----",
-        'llave_privada' => "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoI...\n-----END PRIVATE KEY-----"
-    ];
-}
 ?>
 
 <div class="profile-container">
-
-    <div class="profile-header-section">
-        <h2 class="text-2xl font-bold" style="color: var(--text-main); margin-bottom: 0.25rem;">Configuración de Perfil</h2>
-        <p class="section-desc">Actualiza tu información personal y visualiza tus llaves criptográficas.</p>
-    </div>
 
     <div class="profile-grid">
 
@@ -25,27 +10,29 @@ if (!isset($perfil)) {
             <div class="profile-card">
                 <h3 class="card-title"><i class="fa-solid fa-user-pen text-blue"></i> Editar Información</h3>
 
-                <form action="/profile/update" method="POST" id="profileForm">
+                <form action="/php/dashboard/profile/update" method="POST" id="profileForm">
+                <input type="hidden" name="_csrf" value="<?php echo generateToken() ?>">
+
                     <div class="form-row">
                         <div class="form-group half">
                             <label for="nombre">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($perfil['nombre']); ?>" required>
+                            <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($userInfo->nombre); ?>" required>
                         </div>
                         <div class="form-group half">
                             <label for="apellido">Apellido</label>
-                            <input type="text" id="apellido" name="apellido" value="<?php echo htmlspecialchars($perfil['apellido']); ?>" required>
+                            <input type="text" id="apellido" name="apellido" value="<?php echo htmlspecialchars($userInfo->apellido); ?>" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Correo Electrónico</label>
-                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($perfil['email']); ?>" required>
+                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($userInfo->correo); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="password">Contraseña</label>
                         <div class="input-with-icon">
-                            <input type="password" id="password" name="password" value="<?php echo htmlspecialchars($perfil['password']); ?>" required>
+                            <input type="password" id="password" name="password" value="<?php echo htmlspecialchars($userInfo->contrasena); ?>" required>
                             <button type="button" id="togglePasswordBtn" class="btn-inside" title="Mostrar/Ocultar">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
@@ -71,7 +58,7 @@ if (!isset($perfil)) {
                             <span>Llave Pública</span>
                         </div>
                     </div>
-                    <textarea readonly class="key-display"><?php echo htmlspecialchars($perfil['llave_publica']); ?></textarea>
+                    <textarea readonly class="key-display"><?php echo htmlspecialchars($userInfo->llave_publica); ?></textarea>
                     <p class="key-hint">Esta llave se comparte automáticamente con tus contactos.</p>
                 </div>
 
@@ -82,7 +69,7 @@ if (!isset($perfil)) {
                             <span>Llave Privada</span>
                         </div>
                     </div>
-                    <textarea readonly class="key-display private-display"><?php echo htmlspecialchars($perfil['llave_privada']); ?></textarea>
+                    <textarea readonly class="key-display private-display"><?php echo htmlspecialchars($userInfo->llave_privada); ?></textarea>
                     <p class="key-hint text-danger-hint">Mantenla estrictamente confidencial.</p>
                 </div>
 

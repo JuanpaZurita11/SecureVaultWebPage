@@ -23,10 +23,6 @@ function getInitials($name) {
 <div class="contacts-container">
 
     <div class="contacts-header-section">
-        <div>
-            <h2 class="text-2xl font-bold" style="color: var(--text-main); margin-bottom: 0.25rem;">Mis Contactos</h2>
-            <p style="color: var(--text-muted); font-size: 0.875rem;">Llaves públicas conocidas.</p>
-        </div>
         <div class="header-stats">
             <div class="stat-badge">
                 <i class="fa-solid fa-users text-blue"></i>
@@ -35,13 +31,6 @@ function getInitials($name) {
         </div>
     </div>
 
-    <div class="contacts-actions" style="justify-content: flex-end;">
-        <div class="action-buttons">
-            <button class="btn-add-contact" id="btnAñadirContacto">
-                <i class="fa-solid fa-user-plus"></i><span>Añadir Contacto</span>
-            </button>
-        </div>
-    </div>
 
     <div class="contacts-list-view">
         <div class="contacts-header">
@@ -58,22 +47,22 @@ function getInitials($name) {
                 </div>
             <?php else: ?>
                 <?php foreach ($contactos as $contacto): ?>
-                <div class="contact-row" data-name="<?php echo strtolower($contacto['nombre'] . ' ' . $contacto['username']); ?>">
+                <div class="contact-row">
                     <div class="col-user">
                         <div class="user-avatar-large">
                             <?php echo getInitials($contacto['nombre']); ?>
                         </div>
                         <div class="user-details">
-                            <span class="user-fullname"><?php echo htmlspecialchars($contacto['nombre']); ?></span>
-                            <span class="user-handle"><?php echo htmlspecialchars($contacto['username']); ?></span>
+                            <span class="user-fullname"><?php echo htmlspecialchars("{$contacto['nombre']} {$contacto['apellido']}"); ?></span>
+                            <span class="user-handle"><?php echo htmlspecialchars("@{$contacto['usuario']}"); ?></span>
                         </div>
                     </div>
 
                     <div class="col-actions">
-                        <a href="/public-vault?user=<?php echo urlencode($contacto['username']); ?>" class="action-btn view" title="Ver Bóveda Pública">
+                        <a href="/php/dashboard/search_vault?user=<?php echo urlencode($contacto['usuario']); ?>" class="action-btn view" title="Visitar Bóveda">
                             <i class="fa-solid fa-folder-open"></i>
                         </a>
-                        <button class="action-btn delete btn-delete-contact" title="Eliminar Contacto" data-username="<?php echo htmlspecialchars($contacto['username']); ?>">
+                        <button class="action-btn delete btn-delete-contact" title="Eliminar Contacto" data-id="<?php echo $contacto['id']; ?>" data-username="<?php echo htmlspecialchars($contacto['usuario']); ?>">
                             <i class="fa-solid fa-user-minus"></i>
                         </button>
                     </div>
@@ -94,35 +83,14 @@ function getInitials($name) {
             </div>
             <div class="modal-footer" style="justify-content: center; background: white; border-top: none; padding-bottom: 2rem;">
                 <button type="button" class="btn-cancel">Cancelar</button>
-                <form action="/contacts/delete" method="POST" style="margin: 0;">
-                    <input type="hidden" name="contacto_username" id="deleteContactTarget">
+                <form action="/php/dashboard/contacts/delete" method="POST" style="margin: 0;">
+                <input type="hidden" name="_csrf" value="<?php echo generateToken() ?>">
+                    <input type="hidden" name="id" id="deleteContactTarget" value="">
                     <button type="submit" class="btn-submit delete-style">
                         <i class="fa-solid fa-trash-can"></i> Sí, eliminar
                     </button>
                 </form>
             </div>
-        </div>
-    </div>
-
-    <div id="addContactModal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 class="modal-title">Añadir Nuevo Contacto</h3>
-                <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form action="/contacts/add" method="POST">
-                <div class="modal-body">
-                    <p class="section-desc mb-4">Ingresa el nombre de usuario exacto de la persona que deseas agregar a tu red segura.</p>
-                    <div class="search-box" style="width: 100%;">
-                        <i class="fa-solid fa-at"></i>
-                        <input type="text" name="nuevo_usuario" placeholder="ejemplo_usuario" required style="width: 100%; border: 1px solid #e2e8f0;">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancel">Cancelar</button>
-                    <button type="submit" class="btn-submit"><i class="fa-solid fa-user-plus"></i> Añadir</button>
-                </div>
-            </form>
         </div>
     </div>
 

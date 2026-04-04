@@ -53,7 +53,7 @@ class AuthController extends AbstractController{
 
   private function checkCredentials(string $username, string $password): bool{
 
-    $stmt = $this->pdo->prepare('SELECT `id`,`contrasena` FROM `usuarios` WHERE `usuario` = :username');
+    $stmt = $this->pdo->prepare('SELECT `id`,`contrasena`, `nombre` FROM `usuarios` WHERE `usuario` = :username');
     $stmt->bindValue(':username',$username);
     $stmt->execute();
     $entry = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -69,6 +69,7 @@ class AuthController extends AbstractController{
       session_start();
     }
     $_SESSION['userId'] = $entry['id']; //guardar el id del usuario
+    $_SESSION['nameUser'] = $entry['nombre'];
     session_regenerate_id();
 
 

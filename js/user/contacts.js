@@ -48,10 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const username = e.currentTarget.getAttribute('data-username');
+            const username = e.currentTarget.dataset.username;
+            const id = e.currentTarget.dataset.id;
 
-            if (deleteContactName) deleteContactName.textContent = username;
-            if (deleteContactTarget) deleteContactTarget.value = username;
+            if (deleteContactName) deleteContactName.textContent = '@' + username;
+            if (deleteContactTarget) deleteContactTarget.value = id;
+
 
             openModal('deleteContactModal');
         });
