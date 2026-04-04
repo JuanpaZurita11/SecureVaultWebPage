@@ -43,7 +43,7 @@ function getInitials($name) {
                 <div class="empty-state">
                     <i class="fa-solid fa-address-book" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
                     <p>Aún no tienes contactos</p>
-                    <span>Añade a alguien para empezar a compartir archivos.</span>
+                    <span>Busca y añade a alguien para empezar a compartir archivos.</span>
                 </div>
             <?php else: ?>
                 <?php foreach ($contactos as $contacto): ?>

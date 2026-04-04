@@ -55,7 +55,7 @@
                     <i class="fa-solid fa-hard-drive"></i><span>Mi Bóveda</span>
                 </a>
                 <a href="/php/dashboard/search_vaults" class="nav-link <?= ($pagina == 2) ? 'active' : '' ?>">
-                    <i class="fa-solid fa-magnifying-glass"></i><span>Buscar Bóvedas</span>
+                    <i class="fa-solid fa-magnifying-glass"></i><span>Buscar</span>
                 </a>
                 <a href="/php/dashboard/contacts" class="nav-link <?= ($pagina == 1) ? 'active' : '' ?>">
                     <i class="fa-solid fa-users"></i><span>Contactos</span>

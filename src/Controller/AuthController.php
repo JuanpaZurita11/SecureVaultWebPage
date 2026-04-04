@@ -70,6 +70,7 @@ class AuthController extends AbstractController{
     }
     $_SESSION['userId'] = $entry['id']; //guardar el id del usuario
     $_SESSION['nameUser'] = $entry['nombre'];
+    $_SESSION['username'] = $username;
     session_regenerate_id();
 
 

@@ -1,4 +1,5 @@
 <?php
+/*
 // ---- LÓGICA PHP SIMULADA ----
 if (!isset($archivos)) {
     $archivos = [
@@ -15,14 +16,43 @@ $contactos = [
     ['id' => 102, 'username' => '@bob_jones', 'nombre' => 'Bob Jones'],
     ['id' => 103, 'username' => '@carlos_dev', 'nombre' => 'Carlos Dev']
 ];
-$limite_almacenamiento_mb = 100;
-$espacio_usado_mb = array_sum(array_column($archivos, 'tamano_mb'));
-$porcentaje_usado = min(($espacio_usado_mb / $limite_almacenamiento_mb) * 100, 100);
+*/
 
-function getIcon($tipo) {
-    switch($tipo) { case 'archive': return 'fa-file-zipper'; case 'image': return 'fa-file-image'; case 'text': return 'fa-file-lines'; default: return 'fa-file'; }
+function formatSize(int $bytes){
+    // Si es menos de 1 KB, mostrar en Bytes
+    if ($bytes < 1024) {
+        return $bytes . ' B';
+    }
+
+    // Convertir a KB
+    $kb = $bytes / 1024;
+    if ($kb < 1024) {
+        return round($kb, 1) . ' KB';
+    }
+
+    // Convertir a MB
+    $mb = $kb / 1024;
+    if ($mb < 1024) {
+        return round($mb, 1) . ' MB';
+    }
 }
-function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($mb, 1) . ' MB'; }
+
+function sizeMB(int $bytes) {
+    return round(($bytes/1024/1024),1);
+}
+
+$limite_almacenamiento_mb = 10;
+$espacio_usado = sizeMB(array_sum(array_column($data[0], 'tamano')));
+
+
+$porcentaje_usado = min(($espacio_usado / $limite_almacenamiento_mb) * 100, 100);
+
+foreach ($data[0] as &$archivo) {
+    $archivo['destinatarios'] = json_decode($archivo['destinatarios'], true);
+}
+unset($archivo);
+
+
 ?>
 
 <div class="vault-container">
@@ -32,7 +62,7 @@ function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($m
             <div class="stat-icon blue"><i class="fa-solid fa-file-shield"></i></div>
             <div class="stat-info">
                 <span class="stat-label">Archivos Cifrados</span>
-                <span class="stat-value"><?php echo count($archivos); ?></span>
+                <span class="stat-value"><?php echo count($data[0]); ?></span>
             </div>
         </div>
 
@@ -43,7 +73,7 @@ function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($m
                     <span class="stat-label">Almacenamiento (<?php echo $limite_almacenamiento_mb; ?> MB)</span>
                     <span class="stat-label percent-text"><?php echo round($porcentaje_usado, 1); ?>%</span>
                 </div>
-                <span class="stat-value"><?php echo round($espacio_usado_mb, 1); ?> MB usados</span>
+                <span class="stat-value"><?php echo round($espacio_usado, 1); ?> MB usados</span>
                 <div class="progress-track">
                     <div class="progress-fill <?php echo ($porcentaje_usado > 90) ? 'danger' : ''; ?>" style="width: <?php echo $porcentaje_usado; ?>%;"></div>
                 </div>
@@ -69,14 +99,14 @@ function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($m
         </div>
 
         <div class="file-body" id="fileBody">
-            <?php foreach ($archivos as $archivo): ?>
-            <div class="file-row" data-name="<?php echo htmlspecialchars($archivo['nombre']); ?>">
+            <?php foreach ($data[0] as $archivo): ?>
+            <div class="file-row" data-id="<?php echo htmlspecialchars($archivo['id']); ?>">
                 <div class="col-name">
-                    <div class="file-icon"><i class="fa-solid <?php echo getIcon($archivo['tipo']); ?>"></i></div>
+                    <div class="file-icon"><i class="fa-solid fa-file"></i></div>
                     <span class="file-text"><?php echo htmlspecialchars($archivo['nombre']); ?></span>
                 </div>
-                <div class="col-size"><?php echo formatSize($archivo['tamano_mb']); ?></div>
-                <div class="col-date"><?php echo $archivo['fecha']; ?></div>
+                <div class="col-size"><?php echo formatSize($archivo['tamano']); ?></div>
+                <div class="col-date"><?php echo $archivo['timestamp']; ?></div>
                 <div class="col-actions">
                     <button class="action-btn share" title="Gestionar Acceso">
                         <i class="fa-solid fa-user-lock"></i>
@@ -113,14 +143,14 @@ function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($m
                         <h4 class="section-title">Destinatarios Autorizados (Opcional)</h4>
                         <p class="section-desc">Selecciona quién podrá descifrar este archivo además de ti.</p>
                         <div class="contacts-list">
-                            <?php foreach($contactos as $contacto): ?>
+                            <?php foreach($data[1] as $contacto): ?>
                             <label class="contact-item">
-                                <input type="checkbox" name="destinatarios[]" value="<?php echo $contacto['id']; ?>">
+                                <input type="checkbox" name="destinatarios" value="<?php echo $contacto['id']; ?>">
                                 <div class="contact-info">
                                     <div class="contact-avatar"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
                                     <div class="contact-text">
                                         <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
-                                        <span class="contact-user"><?php echo $contacto['username']; ?></span>
+                                        <span class="contact-user"><?php echo $contacto['usuario']; ?></span>
                                     </div>
                                 </div>
                             </label>
@@ -132,74 +162,6 @@ function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($m
                     <button type="button" class="btn-cancel">Cancelar</button>
                     <button type="submit" class="btn-submit"><i class="fa-solid fa-lock"></i> Cifrar y Subir</button>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="accessModal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 class="modal-title">Compartir archivo</h3>
-                <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form action="/vault/update-access" method="POST" id="accessForm">
-                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-                    <p class="section-desc mb-4">Gestionando acceso para: <strong id="accessFileName" class="text-blue-600">archivo.txt</strong></p>
-                    <input type="hidden" name="archivo_id" id="accessFileId" value="">
-
-                    <div class="recipients-section" style="margin-top: 0; border-top: none; padding-top: 0;">
-                        <h4 class="section-title">Personas con acceso</h4>
-                        <div class="current-access-list" id="activeUsersList">
-                            <div class="access-user-item owner">
-                                <div class="contact-info">
-                                    <div class="contact-avatar" style="background-color: #f1f5f9; color: #475569;">
-                                    <?php echo isset($usuario_nombre) ? strtoupper(substr($usuario_nombre, 0, 1)) : 'U'; ?>
-                                    </div>
-                                    <div class="contact-text">
-                                        <span class="contact-name"><?php echo $usuario_nombre ?? 'Tú'; ?></span>
-                                        <span class="contact-user">Propietario</span>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php foreach($destinatarios as $contacto): ?>
-                            <div class="access-user-item" data-id="<?php echo $contacto['id']; ?>">
-                                <input type="checkbox" name="destinatarios[]" value="<?php echo $contacto['id']; ?>" checked hidden>
-                                <div class="contact-info">
-                                    <div class="contact-avatar"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
-                                        <div class="contact-text">
-                                            <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
-                                            <span class="contact-user"><?php echo $contacto['username']; ?></span>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn-remove-access" title="Revocar acceso"><i class="fa-solid fa-user-minus"></i></button>
-                                </div>
-                        <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                <div class="recipients-section">
-                    <h4 class="section-title">Agregar Contactos</h4>
-                    <div class="contacts-list" id="availableUsersList">
-                        <?php foreach($contactos as $contacto): ?>
-                        <div class="contact-item addable-item" data-id="<?php echo $contacto['id']; ?>">
-                            <input type="checkbox" name="destinatarios[]" value="<?php echo $contacto['id']; ?>" hidden>
-                            <div class="contact-info">
-                                <div class="contact-avatar" style="background: #f0fdf4; color: #16a34a;"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
-                                <div class="contact-text">
-                                    <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
-                                    <span class="contact-user"><?php echo $contacto['username']; ?></span>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-add-access" title="Dar acceso"><i class="fa-solid fa-user-plus"></i></button>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel">Cancelar</button>
-                <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
-            </div>
             </form>
         </div>
     </div>

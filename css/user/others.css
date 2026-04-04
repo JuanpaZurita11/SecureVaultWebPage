@@ -66,3 +66,34 @@
 .file-text { font-size: 0.875rem; font-weight: 500; color: #334155; }
 .col-size, .col-date { font-size: 0.875rem; color: #64748b; }
 .col-actions { display: flex; justify-content: flex-end; }
+
+/* Botones de acción de contacto */
+.btn-contact-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.btn-contact-action.add {
+    background-color: #ecfdf5; /* Esmeralda suave */
+    color: #059669;
+    border-color: #a7f3d0;
+}
+.btn-contact-action.add:hover { background-color: #d1fae5; }
+
+.btn-contact-action.delete {
+    background-color: #fef2f2; /* Rojo suave */
+    color: #dc2626;
+    border-color: #fecaca;
+}
+.btn-contact-action.delete:hover { background-color: #fee2e2; }
+
+/* Asegurar que el modal se oculte correctamente */
+.modal-overlay.hidden { display: none; }

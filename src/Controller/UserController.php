@@ -7,9 +7,9 @@ class UserController extends AbstractController{
   public function __construct(private \App\Repository\User $userRepository){}
 
   public function vault(){
-
+    $data = $this->userRepository->viewVault((int) $_SESSION['userId']);
     $this->render($base='user',$view='vault',$layout=true,$params=['extra_CSS' => ['vault'], 'extra_JS' => ['vault'],
-    'pagina' => 0]);
+    'pagina' => 0, 'data' => $data]);
   }
 
   public function contacts(){
@@ -23,12 +23,27 @@ class UserController extends AbstractController{
     $this->redirect('/dashboard/contacts');
   }
 
-  public function addContact(){
-    
+  public function others(){
+
+    if(empty($_GET))$this->render($base= 'user',$view='others',$layout=true,$params=['extra_CSS'=> ['others'],'extra_JS'=> ['others'],'pagina' => 2]);
+
+
+    if($_GET['username'] === $_SESSION['username'])$this->redirect('/dashboard');
+
+    $entry = $this->userRepository->searchUserByUsername($_GET['username']);
+    if(empty($entry))$this->render($base= 'user',$view='others',$layout=true,$params=['extra_CSS'=> ['others'],'extra_JS'=> ['others'],'pagina' => 2, 'data' => []]);
+
+    $data = $this->userRepository->lookOtherVault($entry['id'],$_SESSION['userId']);
+    $this->render($base= 'user',$view='others',$layout=true,$params=['extra_CSS'=> ['others'],'extra_JS'=> ['others'],'pagina' => 2, 'data' => $data]);
   }
 
-  public function others(){
-    $this->render($base= 'user',$view='others',$layout=true,$params=['extra_CSS'=> ['others'],'extra_JS'=> ['others'],'pagina' => 2]);
+  public function updateRelation(){
+
+    if($_POST['action'] === 'add') $this->userRepository->addContact((int)$_SESSION['userId'],(int)$_POST['usuario_id']);
+    else $this->userRepository->deleteContactbyId((int)$_POST['contacto_id']);
+
+    $this->redirect('/dashboard/search_vaults');
+
   }
 
   public function profile(){

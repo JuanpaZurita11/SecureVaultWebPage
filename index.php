@@ -50,6 +50,7 @@ $router->get('/dashboard/contacts',[\App\Controller\UserController::class,'conta
 $router->post('/dashboard/contacts/delete', [\App\Controller\UserController::class,'deleteContact']);
 
 $router->get('/dashboard/search_vaults',[\App\Controller\UserController::class,'others']);
+$router->post('/dashboard/search_vaults/updateRelation',[\App\Controller\UserController::class,'updateRelation']);
 
 $router->get('/dashboard/profile',[\App\Controller\UserController::class,'profile']);
 $router->post('/dashboard/profile/update',[\App\Controller\UserController::class,'editProfile']);
