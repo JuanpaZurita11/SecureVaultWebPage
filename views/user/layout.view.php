@@ -38,13 +38,13 @@
                 <a href="/php/dashboard" class="nav-link active">
                     <i class="fa-solid fa-hard-drive"></i><span>Mi Bóveda</span>
                 </a>
-                <a href="/search-vaults" class="nav-link">
+                <a href="/php/dashboard/search_vaults" class="nav-link">
                     <i class="fa-solid fa-magnifying-glass"></i><span>Buscar Bóvedas</span>
                 </a>
                 <a href="/php/dashboard/contacts" class="nav-link">
                     <i class="fa-solid fa-users"></i><span>Contactos</span>
                 </a>
-                <a href="/profile" class="nav-link">
+                <a href="/php/dashboard/profile" class="nav-link">
                     <i class="fa-solid fa-gear"></i><span>Configuración</span>
                 </a>
             </nav>

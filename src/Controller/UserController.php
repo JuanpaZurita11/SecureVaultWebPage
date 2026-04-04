@@ -13,4 +13,12 @@ class UserController extends AbstractController{
   public function contacts(){
     $this->render($base='user',$view='contacts',$layout=true,$params=['extra_CSS' => ['contacts'], 'extra_JS' => ['contacts']]);
   }
+
+  public function others(){
+    $this->render($base= 'user',$view='others',$layout=true,$params=['extra_CSS'=> ['others'],'extra_JS'=> ['others']]);
+  }
+
+  public function profile(){
+    $this->render($base='user',$view='profile',$layout=true,$params=['extra_CSS' => ['profile'],'extra_JS' =>['profile']]);
+  }
 }
