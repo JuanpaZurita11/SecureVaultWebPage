@@ -45,6 +45,7 @@ $router->get('/signup', [\App\Controller\AuthController::class,'signup'],false);
 
 
 $router->get('/dashboard',[\App\Controller\UserController::class,'vault']);
+$router->post('/dashboard/delete',[\App\Controller\UserController::class,'deleteFile']);
 
 $router->get('/dashboard/contacts',[\App\Controller\UserController::class,'contacts']);
 $router->post('/dashboard/contacts/delete', [\App\Controller\UserController::class,'deleteContact']);

@@ -47,10 +47,12 @@ $espacio_usado = sizeMB(array_sum(array_column($data[0], 'tamano')));
 
 $porcentaje_usado = min(($espacio_usado / $limite_almacenamiento_mb) * 100, 100);
 
+/*
 foreach ($data[0] as &$archivo) {
     $archivo['destinatarios'] = json_decode($archivo['destinatarios'], true);
 }
 unset($archivo);
+*/
 
 
 ?>
@@ -108,7 +110,7 @@ unset($archivo);
                 <div class="col-size"><?php echo formatSize($archivo['tamano']); ?></div>
                 <div class="col-date"><?php echo $archivo['timestamp']; ?></div>
                 <div class="col-actions">
-                    <button class="action-btn share" title="Gestionar Acceso">
+                    <button class="action-btn share" title="Gestionar Acceso" data-destinatarios='<?php echo htmlspecialchars($archivo['destinatarios']) ?>'>
                         <i class="fa-solid fa-user-lock"></i>
                     </button>
                     <button class="action-btn download" title="Descargar"><i class="fa-solid fa-download"></i></button>
@@ -131,7 +133,6 @@ unset($archivo);
                 <div class="modal-body">
                     <div class="file-drop-area">
                         <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
-                        <span class="drop-text">Arrastra tu archivo aquí o haz clic</span>
                         <input type="file" name="archivo_boveda" id="fileInput" class="file-input" required>
                     </div>
                     <div id="filePreview" class="file-preview hidden">
@@ -147,7 +148,7 @@ unset($archivo);
                             <label class="contact-item">
                                 <input type="checkbox" name="destinatarios" value="<?php echo $contacto['id']; ?>">
                                 <div class="contact-info">
-                                    <div class="contact-avatar"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
+                                    <div class="contact-avatar"><?php echo substr($contacto['nombre'], 0, 1) . ' ' . substr($contacto['apellido'], 0, 1); ?></div>
                                     <div class="contact-text">
                                         <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
                                         <span class="contact-user"><?php echo $contacto['usuario']; ?></span>
@@ -177,8 +178,9 @@ unset($archivo);
             </div>
             <div class="modal-footer" style="justify-content: center; background: white; border-top: none; padding-bottom: 2rem;">
                 <button type="button" class="btn-cancel">Cancelar</button>
-                <form action="/vault/delete" method="POST" style="margin: 0;">
+                <form action="/php/dashboard/delete" method="POST" style="margin: 0;">
                     <input type="hidden" name="archivo_eliminar" id="deleteFileTarget">
+                    <input type="hidden" name="_csrf" value="<?php echo generateToken() ?>">
                     <button type="submit" class="btn-submit" style="background-color: #ef4444; color: white;">
                         <i class="fa-solid fa-trash-can"></i> Sí, eliminar
                     </button>
@@ -186,5 +188,28 @@ unset($archivo);
             </div>
         </div>
     </div>
+</div>
 
+<div id="accessModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Gestionar Acceso</h3>
+                <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="section-desc">Ingresa los usuarios y sus llaves públicas en formato JSON para autorizar su descifrado.<br><br><strong>Formato:</strong> <code>{"usuario": "llave-publica"}</code></p>
+
+                <input type="hidden" id="accessFileId">
+
+                <textarea id="jsonAccessInput" class="json-textarea" spellcheck="false" placeholder='{&#10;  "usuario_destino": "ssh-rsa AAAAB3N..."&#10;}'></textarea>
+
+                <div id="jsonFeedback" class="feedback-text"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel">Cancelar</button>
+                <button type="button" id="saveAccessBtn" class="btn-submit" disabled>
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Accesos
+                </button>
+            </div>
+        </div>
 </div>

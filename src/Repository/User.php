@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 use PDO;
+use PDOException;
 
 class User{
 
@@ -92,6 +93,19 @@ class User{
     $contactos = $this->getContactsofId($userId);
 
     return [$data,$contactos];
+  }
+
+  public function deleteFile(int $fileId){
+    // 1. Preparamos la sentencia SQL
+    $stmt = $this->pdo->prepare('DELETE FROM archivos WHERE id = :id');
+
+    // 2. Vinculamos el valor del ID
+    $stmt->bindValue(':id', $fileId);
+
+    // 3. Ejecutamos la sentencia
+    $success = $stmt->execute();
+
+    return $success;
   }
 
 

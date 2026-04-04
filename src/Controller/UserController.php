@@ -55,5 +55,12 @@ class UserController extends AbstractController{
     $this->userRepository->updateUserinfo($_POST['nombre'],$_POST['apellido'],$_POST['email'],$_POST['password'],$_SESSION['userId']);
     $_SESSION['nameUser'] = $_POST['nombre'];
     $this->redirect('/dashboard/profile');
+
+  }
+
+  public function deleteFile(){
+    $this->userRepository->deleteFile($_POST['archivo_eliminar']);
+    $this->redirect('/dashboard');
+
   }
 }
