@@ -9,4 +9,8 @@ class UserController extends AbstractController{
 
     $this->render($base='user',$view='vault',$layout=true,$params=['extra_CSS' => ['vault'], 'extra_JS' => ['vault']]);
   }
+
+  public function contacts(){
+    $this->render($base='user',$view='contacts',$layout=true,$params=['extra_CSS' => ['contacts'], 'extra_JS' => ['contacts']]);
+  }
 }

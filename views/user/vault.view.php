@@ -8,8 +8,12 @@ if (!isset($archivos)) {
     ];
 }
 
+$destinatarios = [
+    ['id' => 101, 'username' => '@alice_smith', 'nombre' => 'Alice Smith']
+];
+
+
 $contactos = [
-    ['id' => 101, 'username' => '@alice_smith', 'nombre' => 'Alice Smith'],
     ['id' => 102, 'username' => '@bob_jones', 'nombre' => 'Bob Jones'],
     ['id' => 103, 'username' => '@carlos_dev', 'nombre' => 'Carlos Dev']
 ];
@@ -142,37 +146,103 @@ function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($m
     <div id="accessModal" class="modal-overlay hidden">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="modal-title">Gestionar Acceso</h3>
+                <h3 class="modal-title">Compartir archivo</h3>
                 <button class="close-btn" data-modal="accessModal"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <form action="/vault/update-access" method="POST">
-                <div class="modal-body">
-                    <p class="section-desc mb-4">Editando acceso para: <strong id="accessFileName" class="text-blue-600"></strong></p>
+
+            <form action="/vault/update-access" method="POST" id="accessForm">
+                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                    <p class="section-desc mb-4">Gestionando acceso para: <strong id="accessFileName" class="text-blue-600">archivo.txt</strong></p>
                     <input type="hidden" name="archivo_id" id="accessFileId" value="">
 
-                    <div class="recipients-section">
-                        <h4 class="section-title">¿Quién tiene la llave?</h4>
-                        <div class="contacts-list">
-                            <?php foreach($contactos as $contacto): ?>
-                            <label class="contact-item">
-                                <input type="checkbox" name="destinatarios[]" value="<?php echo $contacto['id']; ?>">
+                    <div class="recipients-section" style="margin-top: 0; border-top: none; padding-top: 0;">
+                        <h4 class="section-title">Personas con acceso</h4>
+                        <div class="current-access-list" id="activeUsersList">
+
+                            <div class="access-user-item owner">
                                 <div class="contact-info">
-                                    <div class="contact-avatar"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
+                                    <div class="contact-avatar" style="background-color: #f1f5f9; color: #475569;">
+                                    <?php echo isset($usuario_nombre) ? strtoupper(substr($usuario_nombre, 0, 1)) : 'U'; ?>
+                                    </div>
                                     <div class="contact-text">
-                                        <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
-                                        <span class="contact-user"><?php echo $contacto['username']; ?></span>
+                                        <span class="contact-name"><?php echo $usuario_nombre ?? 'Tú'; ?></span>
+                                        <span class="contact-user">Propietario</span>
                                     </div>
                                 </div>
-                            </label>
-                            <?php endforeach; ?>
+                            </div>
+
+                        <?php foreach($destinatarios as $contacto): ?>
+                            <div class="access-user-item" data-id="<?php echo $contacto['id']; ?>">
+                                <input type="checkbox" name="destinatarios[]" value="<?php echo $contacto['id']; ?>" checked hidden>
+
+                                <div class="contact-info">
+                                    <div class="contact-avatar"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
+                                        <div class="contact-text">
+                                            <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
+                                            <span class="contact-user"><?php echo $contacto['username']; ?></span>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-remove-access" title="Revocar acceso"><i class="fa-solid fa-user-minus"></i></button>
+                                </div>
+                        <?php endforeach; ?>
                         </div>
                     </div>
+
+                <div class="recipients-section">
+                    <h4 class="section-title">Agregar Contactos</h4>
+                    <div class="contacts-list" id="availableUsersList">
+
+                        <?php foreach($contactos as $contacto): ?>
+                        <div class="contact-item addable-item" data-id="<?php echo $contacto['id']; ?>">
+                            <input type="checkbox" name="destinatarios[]" value="<?php echo $contacto['id']; ?>" hidden>
+
+                            <div class="contact-info">
+                                <div class="contact-avatar" style="background: #f0fdf4; color: #16a34a;"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
+                                <div class="contact-text">
+                                    <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
+                                    <span class="contact-user"><?php echo $contacto['username']; ?></span>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-add-access" title="Dar acceso"><i class="fa-solid fa-user-plus"></i></button>
+                        </div>
+                        <?php endforeach; ?>
+
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancel" data-modal="accessModal">Cancelar</button>
-                    <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
-                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-modal="accessModal">Cancelar</button>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
+            </div>
             </form>
         </div>
     </div>
+
+    <div id="deleteModal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width: 400px; text-align: center;">
+            <div class="modal-body" style="padding-top: 2rem;">
+
+                <div style="width: 60px; height: 60px; background: #fef2f2; color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem auto;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+
+                <h3 class="modal-title" style="margin-bottom: 0.5rem; justify-content: center;">¿Eliminar archivo?</h3>
+                <p class="section-desc">Estás a punto de eliminar <strong id="deleteFileName" style="color: #1e293b;">archivo</strong>. Esta acción eliminará el cifrado y no se puede deshacer.</p>
+
+            </div>
+
+            <div class="modal-footer" style="justify-content: center; background: white; border-top: none; padding-bottom: 2rem;">
+                <button type="button" class="btn-cancel" data-modal="deleteModal">Cancelar</button>
+
+                <form action="/vault/delete" method="POST" style="margin: 0;">
+                    <input type="hidden" name="archivo_eliminar" id="deleteFileTarget">
+                    <button type="submit" class="btn-submit" style="background-color: #ef4444; color: white;">
+                        <i class="fa-solid fa-trash-can"></i> Sí, eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>

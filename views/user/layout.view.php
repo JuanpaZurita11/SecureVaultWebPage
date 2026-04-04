@@ -35,13 +35,13 @@
 
             <nav class="sidebar-nav">
                 <p class="nav-title">Menú Principal</p>
-                <a href="/vault" class="nav-link active">
+                <a href="/php/dashboard" class="nav-link active">
                     <i class="fa-solid fa-hard-drive"></i><span>Mi Bóveda</span>
                 </a>
                 <a href="/search-vaults" class="nav-link">
                     <i class="fa-solid fa-magnifying-glass"></i><span>Buscar Bóvedas</span>
                 </a>
-                <a href="/contacts" class="nav-link">
+                <a href="/php/dashboard/contacts" class="nav-link">
                     <i class="fa-solid fa-users"></i><span>Contactos</span>
                 </a>
                 <a href="/profile" class="nav-link">
@@ -50,7 +50,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="/logout" class="nav-link logout-link">
+                <a href="/php/logout" class="nav-link logout-link">
                     <i class="fa-solid fa-right-from-bracket"></i><span>Cerrar sesión</span>
                 </a>
             </div>
@@ -66,10 +66,7 @@
 
                 <div class="topbar-right">
                     <div class="user-profile">
-                        <span class="user-name"><?php echo $usuario_nombre ?? 'Usuario'; ?></span>
-                        <div class="user-avatar">
-                            <?php echo isset($usuario_nombre) ? strtoupper(substr($usuario_nombre, 0, 2)) : 'US'; ?>
-                        </div>
+                        <span class="user-name"><?php echo 'Bienvenido, ' . ($usuario_nombre ?? 'Usuario'); ?></span>
                     </div>
                 </div>
             </header>

@@ -7,8 +7,7 @@ class CsrfHelper{
   public function handle(){
     $this->ensureSession();
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-      var_dump($_POST);
-      var_dump($_SESSION);
+   
       if(!empty($_POST['_csrf']) && !empty($_SESSION['csrfToken']) && $_POST['_csrf'] === $_SESSION['csrfToken']){
         return;
       }

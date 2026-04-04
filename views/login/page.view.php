@@ -19,7 +19,7 @@
             <h1>Secure<span>Vault</span></h1>
         </header>
 
-        <?php if (isset($error_login)): ?>
+        <?php if (isset($loginError)): ?>
         <div class="alert-error-general">
             <i class="fas fa-exclamation-circle"></i>
             <span>Usuario o contraseña incorrectos.</span>

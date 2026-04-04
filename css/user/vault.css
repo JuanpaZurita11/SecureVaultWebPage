@@ -93,3 +93,51 @@
 .btn-cancel:hover { color: #1e293b; }
 .btn-submit { background-color: #2563eb; color: white; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; transition: background 0.2s; }
 .btn-submit:hover { background-color: #1d4ed8; }
+
+/* =========================================
+   LISTA DE ACCESOS (ESTILO DRIVE)
+========================================= */
+.current-access-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.access-user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.access-user-item.owner {
+    background-color: #f8fafc;
+    border-style: dashed;
+}
+
+.btn-remove-access {
+    color: #94a3b8;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+}
+.btn-remove-access:hover { background-color: #fef2f2; color: #ef4444; }
+
+.btn-add-access {
+    color: #94a3b8;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+}
+.contact-item.addable-item:hover .btn-add-access { background-color: #eff6ff; color: #2563eb; }
+
+/* Ajuste a los items de contactos para que no parezcan checkboxes normales */
+.contact-item.addable-item {
+    justify-content: space-between;
+    cursor: default;
+}

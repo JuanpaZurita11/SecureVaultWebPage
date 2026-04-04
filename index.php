@@ -35,6 +35,7 @@ $router->get('/signup', [\App\Controller\AuthController::class,'signup'],false);
 
 
 $router->get('/dashboard',[\App\Controller\UserController::class,'vault']);
+$router->get('/dashboard/contacts',[\App\Controller\UserController::class,'contacts']);
 
 $router->dispatch();
 

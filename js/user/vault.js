@@ -86,4 +86,83 @@ document.addEventListener('DOMContentLoaded', () => {
         fileInput.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
         fileInput.addEventListener('drop', () => dropArea.classList.remove('dragover'));
     }
+
+    // --- LÓGICA DE CONFIRMACIÓN DE BORRADO ---
+    const deleteButtons = document.querySelectorAll('.action-btn.delete');
+    const deleteFileName = document.getElementById('deleteFileName');
+    const deleteFileTarget = document.getElementById('deleteFileTarget');
+
+    deleteButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // 1. Buscamos la fila del archivo a la que pertenece este botón
+            const fileRow = e.currentTarget.closest('.file-row');
+
+            // 2. Extraemos el nombre del archivo del atributo data-name que ya teníamos
+            const filename = fileRow.getAttribute('data-name');
+
+            // 3. Escribimos ese nombre en el modal para que el usuario sepa qué va a borrar
+            if (deleteFileName) deleteFileName.textContent = filename;
+
+            // 4. Ponemos el nombre (o ID) en el input oculto para que PHP sepa qué borrar
+            if (deleteFileTarget) deleteFileTarget.value = filename;
+
+            // 5. Abrimos el modal
+            openModal('deleteModal');
+        });
+    });
+
+    // --- LÓGICA DE TRANSFERENCIA DE CONTACTOS (MODAL 2) ---
+    const activeUsersList = document.getElementById('activeUsersList');
+    const availableUsersList = document.getElementById('availableUsersList');
+
+    // Función para manejar el clic en los botones de Agregar/Quitar
+    const handleAccessToggle = (e) => {
+        // Verifica si se hizo clic en el botón de QUITAR
+        if (e.target.closest('.btn-remove-access')) {
+            const item = e.target.closest('.access-user-item');
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            const btn = item.querySelector('.btn-remove-access');
+
+            // 1. Desmarcar checkbox
+            checkbox.checked = false;
+
+            // 2. Cambiar clases y botón para que parezca un item de "Agregar"
+            item.className = 'contact-item addable-item';
+            btn.className = 'btn-add-access';
+            btn.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
+            btn.title = 'Dar acceso';
+
+            // 3. Cambiar color del avatar a verde (estilo de contactos disponibles)
+            item.querySelector('.contact-avatar').style.cssText = 'background: #f0fdf4; color: #16a34a;';
+
+            // 4. Mover a la lista de abajo
+            availableUsersList.appendChild(item);
+        }
+
+        // Verifica si se hizo clic en el botón de AGREGAR
+        if (e.target.closest('.btn-add-access')) {
+            const item = e.target.closest('.contact-item');
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            const btn = item.querySelector('.btn-add-access');
+
+            // 1. Marcar checkbox
+            checkbox.checked = true;
+
+            // 2. Cambiar clases y botón para que parezca un item de "Acceso actual"
+            item.className = 'access-user-item';
+            btn.className = 'btn-remove-access';
+            btn.innerHTML = '<i class="fa-solid fa-user-minus"></i>';
+            btn.title = 'Revocar acceso';
+
+            // 3. Cambiar color del avatar al azul normal
+            item.querySelector('.contact-avatar').style.cssText = 'background: #dbeafe; color: #1d4ed8;';
+
+            // 4. Mover a la lista de arriba
+            activeUsersList.appendChild(item);
+        }
+    };
+
+    // Escuchamos los clics en los contenedores padres (Delegación de eventos)
+    if(activeUsersList) activeUsersList.addEventListener('click', handleAccessToggle);
+    if(availableUsersList) availableUsersList.addEventListener('click', handleAccessToggle);
 });
