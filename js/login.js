@@ -33,14 +33,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Validación en tiempo real (al escribir)
     usernameInput.addEventListener('input', function() {
-        if (this.value.length >= 3) {
+        if (this.value.length >= 0) {
             clearError(usernameInput, errorUsername);
         }
     });
 
     passwordInput.addEventListener('input', function() {
-        if (this.value.length >= 6) {
-            clearError(passwordInput, errorPassword);
+        if (this.value.length >= 0) {
+            clearError(usernameInput, errorUsername);
         }
     });
 
@@ -56,28 +56,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (usernameInput.value.trim() === "") {
             showError(usernameInput, errorUsername, "El usuario es obligatorio.");
             esValido = false;
-        } else if (usernameInput.value.length < 3) {
-            showError(usernameInput, errorUsername, "Mínimo 3 caracteres.");
-            esValido = false;
         }
 
         // 2. Validar Contraseña
         if (passwordInput.value.trim() === "") {
             showError(passwordInput, errorPassword, "La contraseña es obligatoria.");
             esValido = false;
-        } else if (passwordInput.value.length < 6) {
-            showError(passwordInput, errorPassword, "Mínimo 6 caracteres.");
-            esValido = false;
         }
 
         // 3. Decidir si enviar o detener
         if (!esValido) {
-            // Detenemos el envío a dashboard.php
             evento.preventDefault();
             console.log("Validación de JS fallida. Corrija los campos.");
         } else {
             console.log("Validación de JS exitosa. Enviando datos a PHP...");
-            // No hacemos preventDefault, por lo que el formulario se envía normalmente.
         }
     });
 });

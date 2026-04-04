@@ -4,6 +4,7 @@ namespace App\Controller;
 
 class UserController extends AbstractController{
 
+  public function __construct(private \App\Repository\User $userRepository){}
 
   public function vault(){
 

@@ -5,22 +5,32 @@ require_once __DIR__ . "/inc/all.inc.php";
 
 $container = new \App\Support\Container();
 
+//Conexión a la base de datos
+$container->bind('pdo',function(){
+  return require __DIR__ . '/inc/db-connect.inc.php';
+});
+
 //Necesario para AuthController
 $container->bind(\App\Support\AuthService::class, function(){
   return new \App\Support\AuthService();
 });
 $container->bind(\App\Controller\AuthController::class, function() use($container){
-  $authService = new \App\Support\AuthService();
-  return new \App\Controller\AuthController($authService);
+  $authService = $container->get(\App\Support\AuthService::class);
+  $pdo = $container->get('pdo');
+  return new \App\Controller\AuthController($authService,$pdo);
 });
 
 //Necesario para UserController
-$container->bind(\App\Controller\UserController::class, function(){
-  return new \App\Controller\UserController();
+$container->bind(\App\Repository\User::class, function() use($container){
+  $pdo = $container->get('pdo');
+  return new \App\Repository\User($pdo);
+});
+$container->bind(\App\Controller\UserController::class, function() use($container){
+  $userRespository = $container->get(\App\Repository\User::class);
+  return new \App\Controller\UserController($userRespository);
 });
 
 
-//Se puedo omitir por el momento
 $container->bind(\App\Support\CsrfHelper::class, function(){
   return new \App\Support\CsrfHelper();
 });

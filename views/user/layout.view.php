@@ -16,8 +16,6 @@
 
     <link rel="stylesheet" href="/php/css/user/layout.css">
 
-    <link rel="stylesheet" href="/php/css/user/components.css">
-
     <?php foreach ($extra_CSS as $sheet): ?>
     <link rel="stylesheet" href="/php/css/user/<?= htmlspecialchars($sheet) ?>.css">
     <?php endforeach; ?>
@@ -79,7 +77,7 @@
         </div>
     </div>
 
-    <script src="/php/js/user/main.js"></script>
+    <script src="/php/js/user/layout.js"></script>
 
     <?php foreach ($extra_JS as $script): ?>
     <script src="/php/js/user/<?= htmlspecialchars($script) ?>.js"></script>

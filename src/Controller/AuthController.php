@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Controller;
+use PDO;
 
 class AuthController extends AbstractController{
 
-  /*
-  public function __construct(private \App\Repository\User $userRepository){}
-  */
 
-  public function __construct(private \App\Support\AuthService $authService){}
+
+  public function __construct(private \App\Support\AuthService $authService,private PDO $pdo){}
 
   public function showLogin(){
 
@@ -54,8 +53,14 @@ class AuthController extends AbstractController{
 
   private function checkCredentials(string $username, string $password): bool{
 
+    $stmt = $this->pdo->prepare('SELECT `id`,`contrasena` FROM `usuarios` WHERE `usuario` = :username');
+    $stmt->bindValue(':username',$username);
+    $stmt->execute();
+    $entry = $stmt->fetch(PDO::FETCH_ASSOC);
+    if(empty($entry))return false;
 
-    if($password !== '1234567'){
+
+    if($password !== $entry['contrasena']){
       return false;
     }
 
@@ -63,7 +68,7 @@ class AuthController extends AbstractController{
     if (session_status() === PHP_SESSION_NONE){
       session_start();
     }
-    $_SESSION['userId'] = rand(1,5); //guardar el id del usuario
+    $_SESSION['userId'] = $entry['id']; //guardar el id del usuario
     session_regenerate_id();
 
 
