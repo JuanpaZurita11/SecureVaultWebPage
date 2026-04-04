@@ -1,0 +1,147 @@
+/* --- ESTILOS RECREADOS DE LA IMAGEN DE REFERENCIA (SecureVault Login) --- */
+
+:root {
+    --bg-color: #0d1117;          /* Fondo muy oscuro de la página */
+    --vault-bg: #161b22;         /* Fondo de la tarjeta central */
+    --text-primary: #c9d1d9;      /* Texto general */
+    --text-muted: #8b949e;       /* Texto secundario (año, link) */
+    --accent-blue: #58a6ff;      /* El 'Vault' en el título */
+    --accent-green: #238636;     /* Botón Sign In/Crear Cuenta */
+    --accent-green-hover: #2ea043;
+    --input-bg: #0d1117;         /* Fondo de los inputs */
+    --border-color: #30363d;     /* Bordes de la tarjeta */
+    --input-border: #30363d;
+}
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* --- TARJETA CENTRAL (Replicada de image_0.png) --- */
+.login-container {
+    background-color: var(--vault-bg);
+    width: 350px;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+/* Cabecera del Logo */
+.header-logo .logo-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background-color: #f1e05a; /* Color amarillo del icono */
+    color: #161b22;
+    font-size: 30px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.header-logo h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.header-logo h1 span {
+    color: var(--accent-blue);
+}
+
+.header-logo p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-top: 5px;
+    margin-bottom: 30px;
+}
+
+/* --- FORMULARIO E INPUTS (Replicados de image_0.png) --- */
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-primary);
+    padding: 12px 12px 12px 40px; /* Padding izquierdo para el ícono */
+    border-radius: 6px;
+    box-sizing: border-box; /* Importante para el padding */
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+}
+
+.input-group .icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+}
+
+/* --- BOTÓN DE REGISTRO (Mismo verde de image_0.png) --- */
+button#btnRegister {
+    width: 100%;
+    background-color: var(--accent-green);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espacio entre texto e icono */
+}
+
+button#btnRegister:hover {
+    background-color: var(--accent-green-hover);
+}
+
+/* Link para volver al login */
+.sign-up-link {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 30px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.sign-up-link a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sign-up-link a:hover {
+    text-decoration: underline;
+}
