@@ -1,56 +1,33 @@
 <?php
-// Datos de ejemplo actualizados con valores numéricos para calcular el almacenamiento
+// ---- LÓGICA PHP SIMULADA (Reemplazar con tu DB en MVC) ----
 if (!isset($archivos)) {
     $archivos = [
-        ['id' => 1, 'nombre' => 'backup_servidor.zip.vault', 'tamano_mb' => 1, 'fecha' => '02/04/2024', 'tipo' => 'archive'],
-        ['id' => 2, 'nombre' => 'claves_privadas.txt.vault', 'tamano_mb' => 2, 'fecha' => '01/04/2024', 'tipo' => 'text'],
-        ['id' => 3, 'nombre' => 'identificacion_oficial.jpg.vault', 'tamano_mb' => 1, 'fecha' => '28/03/2024', 'tipo' => 'image'],
-        ['id' => 4, 'nombre' => 'reporte_anual_2023.pdf.vault', 'tamano_mb' => 0.5, 'fecha' => '20/03/2024', 'tipo' => 'pdf'],
+        ['id' => 1, 'nombre' => 'backup_servidor.zip.vault', 'tamano_mb' => 25.5, 'fecha' => '02/04/2024', 'tipo' => 'archive'],
+        ['id' => 2, 'nombre' => 'claves_privadas.txt.vault', 'tamano_mb' => 0.012, 'fecha' => '01/04/2024', 'tipo' => 'text'],
+        ['id' => 3, 'nombre' => 'identificacion.jpg.vault', 'tamano_mb' => 2.4, 'fecha' => '28/03/2024', 'tipo' => 'image']
     ];
 }
 
 $contactos = [
     ['id' => 101, 'username' => '@alice_smith', 'nombre' => 'Alice Smith'],
     ['id' => 102, 'username' => '@bob_jones', 'nombre' => 'Bob Jones'],
-    ['id' => 103, 'username' => '@carlos_dev', 'nombre' => 'Carlos Dev'],
-    ['id' => 104, 'username' => '@diana_pr', 'nombre' => 'Diana Prince']
+    ['id' => 103, 'username' => '@carlos_dev', 'nombre' => 'Carlos Dev']
 ];
 
-// Lógica de Almacenamiento
-$limite_almacenamiento_mb = 10;
-$espacio_usado_mb = 0;
+$limite_almacenamiento_mb = 100;
+$espacio_usado_mb = array_sum(array_column($archivos, 'tamano_mb'));
+$porcentaje_usado = min(($espacio_usado_mb / $limite_almacenamiento_mb) * 100, 100);
 
-foreach ($archivos as $archivo) {
-    $espacio_usado_mb += $archivo['tamano_mb'];
-}
-
-$porcentaje_usado = ($espacio_usado_mb / $limite_almacenamiento_mb) * 100;
-// Asegurarnos de que no pase del 100% visualmente
-$porcentaje_visual = min($porcentaje_usado, 100);
-
-// Función para asignar iconos según el tipo
 function getIcon($tipo) {
-    switch($tipo) {
-        case 'archive': return 'fa-file-zipper';
-        case 'image': return 'fa-file-image';
-        case 'pdf': return 'fa-file-pdf';
-        case 'text': return 'fa-file-lines';
-        default: return 'fa-file';
-    }
+    switch($tipo) { case 'archive': return 'fa-file-zipper'; case 'image': return 'fa-file-image'; case 'text': return 'fa-file-lines'; default: return 'fa-file'; }
 }
-
-// Función para formatear el texto del tamaño en la tabla
-function formatSizeText($mb) {
-    if ($mb < 1) {
-        return round($mb * 1024) . ' KB';
-    }
-    return round($mb, 1) . ' MB';
-}
+function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($mb, 1) . ' MB'; }
+// -----------------------------------------------------------
 ?>
 
 <div class="vault-container">
-    <div class="vault-stats">
 
+    <div class="vault-stats">
         <div class="stat-card">
             <div class="stat-icon blue"><i class="fa-solid fa-file-shield"></i></div>
             <div class="stat-info">
@@ -67,14 +44,11 @@ function formatSizeText($mb) {
                     <span class="stat-label percent-text"><?php echo round($porcentaje_usado, 1); ?>%</span>
                 </div>
                 <span class="stat-value"><?php echo round($espacio_usado_mb, 1); ?> MB usados</span>
-
                 <div class="progress-track">
-                    <div class="progress-fill <?php echo ($porcentaje_visual > 90) ? 'danger' : ''; ?>"
-                         style="width: <?php echo $porcentaje_visual; ?>%;"></div>
+                    <div class="progress-fill <?php echo ($porcentaje_usado > 90) ? 'danger' : ''; ?>" style="width: <?php echo $porcentaje_usado; ?>%;"></div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="vault-actions">
@@ -85,49 +59,120 @@ function formatSizeText($mb) {
 
         <div class="action-buttons">
             <div class="view-toggle">
-                <button id="viewList" class="toggle-btn active" title="Vista de lista">
-                    <i class="fa-solid fa-list"></i>
-                </button>
-                <button id="viewGrid" class="toggle-btn" title="Vista de cuadrícula">
-                    <i class="fa-solid fa-table-cells-large"></i>
-                </button>
+                <button id="viewList" class="toggle-btn active" title="Vista de lista"><i class="fa-solid fa-list"></i></button>
+                <button id="viewGrid" class="toggle-btn" title="Vista de cuadrícula"><i class="fa-solid fa-table-cells-large"></i></button>
             </div>
             <button class="btn-upload">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-                <span>Subir Archivo</span>
+                <i class="fa-solid fa-cloud-arrow-up"></i><span>Subir Archivo</span>
             </button>
         </div>
     </div>
 
     <div id="fileDisplay" class="file-list-view">
         <div class="file-header">
-            <div class="col-name">Nombre</div>
-            <div class="col-size">Tamaño</div>
-            <div class="col-date">Fecha</div>
-            <div class="col-actions text-right">Acciones</div>
+            <div class="col-name">Nombre</div><div class="col-size">Tamaño</div><div class="col-date">Fecha</div><div class="col-actions text-right">Acciones</div>
         </div>
 
         <div class="file-body" id="fileBody">
             <?php foreach ($archivos as $archivo): ?>
             <div class="file-row" data-name="<?php echo strtolower($archivo['nombre']); ?>">
                 <div class="col-name">
-                    <div class="file-icon">
-                        <i class="fa-solid <?php echo getIcon($archivo['tipo']); ?>"></i>
-                    </div>
+                    <div class="file-icon"><i class="fa-solid <?php echo getIcon($archivo['tipo']); ?>"></i></div>
                     <span class="file-text"><?php echo htmlspecialchars($archivo['nombre']); ?></span>
                 </div>
-                <div class="col-size"><?php echo formatSizeText($archivo['tamano_mb']); ?></div>
+                <div class="col-size"><?php echo formatSize($archivo['tamano_mb']); ?></div>
                 <div class="col-date"><?php echo $archivo['fecha']; ?></div>
                 <div class="col-actions">
-                    <button class="action-btn download" title="Descargar y descifrar">
-                        <i class="fa-solid fa-download"></i>
+                    <button class="action-btn share" title="Gestionar Acceso" data-filename="<?php echo htmlspecialchars($archivo['nombre']); ?>">
+                        <i class="fa-solid fa-user-lock"></i>
                     </button>
-                    <button class="action-btn delete" title="Eliminar">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
+                    <button class="action-btn download" title="Descargar"><i class="fa-solid fa-download"></i></button>
+                    <button class="action-btn delete" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             </div>
             <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div id="uploadModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Subir nuevo archivo</h3>
+                <button class="close-btn" data-modal="uploadModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form action="/vault/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+                <div class="modal-body">
+                    <div class="file-drop-area">
+                        <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                        <span class="drop-text">Arrastra tu archivo aquí o haz clic</span>
+                        <input type="file" name="archivo_boveda" id="fileInput" class="file-input" required>
+                    </div>
+                    <div id="filePreview" class="file-preview hidden">
+                        <i class="fa-solid fa-file file-preview-icon"></i>
+                        <span id="fileNameDisplay" class="file-preview-name"></span>
+                    </div>
+
+                    <div class="recipients-section">
+                        <h4 class="section-title">Destinatarios Autorizados (Opcional)</h4>
+                        <p class="section-desc">Selecciona quién podrá descifrar este archivo además de ti.</p>
+                        <div class="contacts-list">
+                            <?php foreach($contactos as $contacto): ?>
+                            <label class="contact-item">
+                                <input type="checkbox" name="destinatarios[]" value="<?php echo $contacto['id']; ?>">
+                                <div class="contact-info">
+                                    <div class="contact-avatar"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
+                                    <div class="contact-text">
+                                        <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
+                                        <span class="contact-user"><?php echo $contacto['username']; ?></span>
+                                    </div>
+                                </div>
+                            </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-modal="uploadModal">Cancelar</button>
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-lock"></i> Cifrar y Subir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="accessModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Gestionar Acceso</h3>
+                <button class="close-btn" data-modal="accessModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form action="/vault/update-access" method="POST">
+                <div class="modal-body">
+                    <p class="section-desc mb-4">Editando acceso para: <strong id="accessFileName" class="text-blue-600"></strong></p>
+                    <input type="hidden" name="archivo_id" id="accessFileId" value="">
+
+                    <div class="recipients-section">
+                        <h4 class="section-title">¿Quién tiene la llave?</h4>
+                        <div class="contacts-list">
+                            <?php foreach($contactos as $contacto): ?>
+                            <label class="contact-item">
+                                <input type="checkbox" name="destinatarios[]" value="<?php echo $contacto['id']; ?>">
+                                <div class="contact-info">
+                                    <div class="contact-avatar"><?php echo substr($contacto['nombre'], 0, 1); ?></div>
+                                    <div class="contact-text">
+                                        <span class="contact-name"><?php echo $contacto['nombre']; ?></span>
+                                        <span class="contact-user"><?php echo $contacto['username']; ?></span>
+                                    </div>
+                                </div>
+                            </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-modal="accessModal">Cancelar</button>
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
