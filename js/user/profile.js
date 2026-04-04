@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. LÓGICA PARA VER/OCULTAR CONTRASEÑA
+    // --- 1. LÓGICA PARA VER/OCULTAR CONTRASEÑA ---
     const togglePasswordBtn = document.getElementById('togglePasswordBtn');
     const passwordInput = document.getElementById('password');
 
@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
         togglePasswordBtn.addEventListener('click', () => {
             const icon = togglePasswordBtn.querySelector('i');
 
-            // Alternar el tipo de input entre 'password' y 'text'
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 icon.classList.replace('fa-eye', 'fa-eye-slash');
@@ -19,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. LÓGICA PARA HABILITAR/DESHABILITAR EL BOTÓN DE GUARDAR
+    // --- 2. LÓGICA PARA HABILITAR/DESHABILITAR EL BOTÓN DE GUARDAR ---
     const profileForm = document.getElementById('profileForm');
     const saveBtn = document.getElementById('saveBtn');
 
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let [key, value] of currentData.entries()) {
                 if (initialData.get(key) !== value) {
                     hasChanged = true;
-                    break; // Si encontramos al menos un cambio, dejamos de buscar
+                    break;
                 }
             }
 
@@ -44,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveBtn.disabled = !hasChanged;
         };
 
-        // Escuchamos el evento 'input' (que se dispara en tiempo real cada vez que escribes)
+        // Escuchamos el evento 'input' en tiempo real
         profileForm.addEventListener('input', checkFormChanges);
     }
 });

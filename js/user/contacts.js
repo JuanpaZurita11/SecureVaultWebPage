@@ -1,20 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- BÚSQUEDA DE CONTACTOS ---
-    const searchInput = document.getElementById('contactSearch');
-    const contactRows = document.querySelectorAll('.contact-row');
+    // --- 1. LÓGICA DE MODALES (Aislada y Segura) ---
+    const openModal = (modalId) => {
+        const modal = document.getElementById(modalId);
+        if(modal) modal.classList.remove('hidden');
+    };
 
-    if(searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase().trim();
-            contactRows.forEach(row => {
-                const nameData = row.getAttribute('data-name');
-                row.style.display = nameData.includes(term) ? 'flex' : 'none';
-            });
+    const closeModal = (modalId) => {
+        const modal = document.getElementById(modalId);
+        if(modal) {
+            modal.classList.add('hidden');
+            // Si es el modal de añadir, limpiamos el input al cerrar
+            if(modalId === 'addContactModal') {
+                setTimeout(() => modal.querySelector('form').reset(), 200);
+            }
+        }
+    };
+
+    // Cerrar con los botones X o Cancelar
+    document.querySelectorAll('.close-btn, .btn-cancel').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const modal = e.currentTarget.closest('.modal-overlay');
+            if(modal) closeModal(modal.id);
         });
+    });
+
+    // Cerrar tocando el fondo oscuro
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.classList.add('hidden');
+        });
+    });
+
+
+    // --- 2. APERTURA DE MODALES ---
+
+    // Modal: Añadir Contacto
+    const btnAddContact = document.getElementById('btnAñadirContacto');
+    if(btnAddContact) {
+        btnAddContact.addEventListener('click', () => openModal('addContactModal'));
     }
 
-    // --- LÓGICA DEL MODAL DE ELIMINAR ---
+    // Modal: Eliminar Contacto
     const deleteButtons = document.querySelectorAll('.btn-delete-contact');
     const deleteContactName = document.getElementById('deleteContactName');
     const deleteContactTarget = document.getElementById('deleteContactTarget');
@@ -30,28 +57,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Cerrar modales al hacer clic fuera de la caja blanca
-    const overlays = document.querySelectorAll('.modal-overlay');
-    overlays.forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                overlay.classList.add('hidden');
-            }
-        });
-    });
 });
-
-// Funciones globales para abrir y cerrar modales
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if(modal) {
-        modal.classList.remove('hidden');
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if(modal) {
-        modal.classList.add('hidden');
-    }
-}

@@ -1,10 +1,8 @@
 /* =========================================
-   CONTENEDOR Y GRID
+   1. CONTENEDOR Y GRID (ESPECÍFICO DEL PERFIL)
 ========================================= */
 .profile-container { display: flex; flex-direction: column; gap: 2rem; }
 .profile-header-section { margin-bottom: 0.5rem; }
-.text-2xl { font-size: 1.5rem; }
-.font-bold { font-weight: 700; }
 
 .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
 .profile-column { display: flex; flex-direction: column; gap: 2rem; }
@@ -12,27 +10,21 @@
 @media (max-width: 850px) { .profile-grid { grid-template-columns: 1fr; } }
 
 /* =========================================
-   TARJETAS Y FORMULARIOS
+   2. TARJETAS Y FORMULARIOS
 ========================================= */
 .profile-card { background: white; padding: 2rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 
 .card-title { font-size: 1.125rem; font-weight: 600; color: #1e293b; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 0.5rem; }
 .text-blue { color: #2563eb; }
-.section-desc { font-size: 0.875rem; color: #64748b; margin-bottom: 1.5rem; }
 
 .form-row { display: flex; gap: 1rem; }
 .form-group { display: flex; flex-direction: column; margin-bottom: 1.25rem; width: 100%; }
 .form-group.half { width: 50%; }
-
 .form-group label { font-size: 0.875rem; font-weight: 600; color: #475569; margin-bottom: 0.5rem; }
 
-/* Contenedor relativo para meter el ojito dentro del input */
 .input-with-icon { position: relative; display: flex; align-items: center; }
-
 .form-group input { width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid #cbd5e1; font-size: 0.95rem; color: #1e293b; outline: none; transition: border-color 0.2s; }
 .form-group input:focus { border-color: #2563eb; }
-
-/* Ajuste de padding si hay un icono dentro */
 .input-with-icon input { padding-right: 2.5rem; }
 
 .btn-inside { position: absolute; right: 0.75rem; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1rem; transition: color 0.2s; padding: 0.2rem; }
@@ -40,13 +32,8 @@
 
 .form-actions { display: flex; justify-content: flex-end; }
 
-/* Estilos del botón (Normal, Hover y Deshabilitado) */
-.btn-submit { background-color: #2563eb; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-submit:hover:not(:disabled) { background-color: #1d4ed8; }
-.btn-submit:disabled { background-color: #94a3b8; cursor: not-allowed; opacity: 0.7; }
-
 /* =========================================
-   ZONA DE LLAVES (KEYS)
+   3. ZONA DE LLAVES (KEYS)
 ========================================= */
 .keys-card { background-color: #f8fafc; }
 .key-group { margin-bottom: 1.5rem; }

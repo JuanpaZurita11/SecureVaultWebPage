@@ -5,7 +5,7 @@ if (!isset($perfil)) {
         'nombre' => 'Alice',
         'apellido' => 'Smith',
         'email' => 'alice.smith@ejemplo.com',
-        'password' => 'ClaveSecreta123!', // <-- Añadida la contraseña actual
+        'password' => 'ClaveSecreta123!',
         'llave_publica' => "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzqX...\n-----END PUBLIC KEY-----",
         'llave_privada' => "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoI...\n-----END PRIVATE KEY-----"
     ];
@@ -16,7 +16,7 @@ if (!isset($perfil)) {
 
     <div class="profile-header-section">
         <h2 class="text-2xl font-bold" style="color: var(--text-main); margin-bottom: 0.25rem;">Configuración de Perfil</h2>
-        <p style="color: var(--text-muted); font-size: 0.875rem;">Actualiza tu información personal y visualiza tus llaves criptográficas.</p>
+        <p class="section-desc">Actualiza tu información personal y visualiza tus llaves criptográficas.</p>
     </div>
 
     <div class="profile-grid">

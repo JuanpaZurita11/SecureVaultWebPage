@@ -1,8 +1,6 @@
 <?php
-
     $extra_CSS ??= [];
     $extra_JS  ??= [];
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -17,6 +15,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="/php/css/user/layout.css">
+
+    <link rel="stylesheet" href="/php/css/user/components.css">
+
     <?php foreach ($extra_CSS as $sheet): ?>
     <link rel="stylesheet" href="/php/css/user/<?= htmlspecialchars($sheet) ?>.css">
     <?php endforeach; ?>
@@ -78,10 +79,10 @@
         </div>
     </div>
 
-    <script src="/php/js/user/layout.js"></script>
+    <script src="/php/js/user/main.js"></script>
+
     <?php foreach ($extra_JS as $script): ?>
     <script src="/php/js/user/<?= htmlspecialchars($script) ?>.js"></script>
     <?php endforeach; ?>
 </body>
 </html>
-

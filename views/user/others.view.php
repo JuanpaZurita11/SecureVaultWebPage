@@ -108,6 +108,3 @@ function formatSize($mb) { return $mb < 1 ? round($mb * 1024) . ' KB' : round($m
     <?php endif; ?>
 
 </div>
-
-<link rel="stylesheet" href="/assets/css/search-vaults.css">
-<script src="/assets/js/search-vaults.js"></script>

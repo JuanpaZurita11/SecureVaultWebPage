@@ -1,5 +1,5 @@
 <?php
-// Datos simulados (Sin la fecha de agregado)
+// Datos simulados
 if (!isset($contactos)) {
     $contactos = [
         ['id' => 101, 'username' => '@alice_smith', 'nombre' => 'Alice Smith'],
@@ -9,7 +9,7 @@ if (!isset($contactos)) {
     ];
 }
 
-// Función para obtener iniciales para el avatar
+// Función para obtener iniciales
 function getInitials($name) {
     $words = explode(" ", $name);
     $initials = "";
@@ -35,14 +35,9 @@ function getInitials($name) {
         </div>
     </div>
 
-    <div class="contacts-actions">
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="contactSearch" placeholder="Buscar por nombre o @usuario...">
-        </div>
-
+    <div class="contacts-actions" style="justify-content: flex-end;">
         <div class="action-buttons">
-            <button class="btn-add-contact" onclick="openModal('addContactModal')">
+            <button class="btn-add-contact" id="btnAñadirContacto">
                 <i class="fa-solid fa-user-plus"></i><span>Añadir Contacto</span>
             </button>
         </div>
@@ -57,7 +52,7 @@ function getInitials($name) {
         <div class="contacts-body" id="contactsBody">
             <?php if(empty($contactos)): ?>
                 <div class="empty-state">
-                    <i class="fa-solid fa-address-book"></i>
+                    <i class="fa-solid fa-address-book" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
                     <p>Aún no tienes contactos</p>
                     <span>Añade a alguien para empezar a compartir archivos.</span>
                 </div>
@@ -95,10 +90,10 @@ function getInitials($name) {
                     <i class="fa-solid fa-user-xmark"></i>
                 </div>
                 <h3 class="modal-title" style="margin-bottom: 0.5rem; justify-content: center;">¿Eliminar contacto?</h3>
-                <p class="section-desc">Estás a punto de eliminar a<strong id="deleteContactName" style="color: #1e293b;">@usuario</strong> de tus contactos.</p>
+                <p class="section-desc">Estás a punto de eliminar a <strong id="deleteContactName" style="color: #1e293b;">@usuario</strong> de tus contactos.</p>
             </div>
             <div class="modal-footer" style="justify-content: center; background: white; border-top: none; padding-bottom: 2rem;">
-                <button type="button" class="btn-cancel" onclick="closeModal('deleteContactModal')">Cancelar</button>
+                <button type="button" class="btn-cancel">Cancelar</button>
                 <form action="/contacts/delete" method="POST" style="margin: 0;">
                     <input type="hidden" name="contacto_username" id="deleteContactTarget">
                     <button type="submit" class="btn-submit delete-style">
@@ -113,19 +108,18 @@ function getInitials($name) {
         <div class="modal-box">
             <div class="modal-header">
                 <h3 class="modal-title">Añadir Nuevo Contacto</h3>
-                <button class="close-btn" onclick="closeModal('addContactModal')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form action="/contacts/add" method="POST">
                 <div class="modal-body">
                     <p class="section-desc mb-4">Ingresa el nombre de usuario exacto de la persona que deseas agregar a tu red segura.</p>
-
                     <div class="search-box" style="width: 100%;">
                         <i class="fa-solid fa-at"></i>
                         <input type="text" name="nuevo_usuario" placeholder="ejemplo_usuario" required style="width: 100%; border: 1px solid #e2e8f0;">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-cancel" onclick="closeModal('addContactModal')">Cancelar</button>
+                    <button type="button" class="btn-cancel">Cancelar</button>
                     <button type="submit" class="btn-submit"><i class="fa-solid fa-user-plus"></i> Añadir</button>
                 </div>
             </form>
@@ -133,6 +127,3 @@ function getInitials($name) {
     </div>
 
 </div>
-
-<link rel="stylesheet" href="/assets/css/contacts.css">
-<script src="/assets/js/contacts.js"></script>
