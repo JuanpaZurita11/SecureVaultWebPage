@@ -29,7 +29,7 @@ class User{
   }
 
   public function getContactsofId(int $id){
-    $stmt = $this->pdo->prepare('SELECT c.id, u.usuario, u.nombre, u.apellido
+    $stmt = $this->pdo->prepare('SELECT c.id, u.usuario, u.nombre, u.apellido, u.llave_publica
             FROM usuarios u
             INNER JOIN contactos c ON u.id = c.contacto_id
             WHERE c.usuario_id = :id' );
@@ -90,6 +90,7 @@ class User{
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
     $contactos = $this->getContactsofId($userId);
 
     return [$data,$contactos];
@@ -106,6 +107,13 @@ class User{
     $success = $stmt->execute();
 
     return $success;
+  }
+
+  public function updateRecipients(int $id, string $JSON){
+    $stmt = $this->pdo->prepare('UPDATE archivos SET destinatarios = :json_data WHERE id = :id');
+    $stmt->bindValue(':id', $id);
+    $stmt->bindValue(':json_data', $JSON);
+    return $stmt->execute();
   }
 
 

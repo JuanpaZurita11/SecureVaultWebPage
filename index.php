@@ -46,12 +46,14 @@ $router->get('/signup', [\App\Controller\AuthController::class,'signup'],false);
 
 $router->get('/dashboard',[\App\Controller\UserController::class,'vault']);
 $router->post('/dashboard/delete',[\App\Controller\UserController::class,'deleteFile']);
+$router->post('/dashboard/updateShareConfig',[\App\Controller\UserController::class,'updateShareConfig']);
 
 $router->get('/dashboard/contacts',[\App\Controller\UserController::class,'contacts']);
 $router->post('/dashboard/contacts/delete', [\App\Controller\UserController::class,'deleteContact']);
 
 $router->get('/dashboard/search_vaults',[\App\Controller\UserController::class,'others']);
 $router->post('/dashboard/search_vaults/updateRelation',[\App\Controller\UserController::class,'updateRelation']);
+
 
 $router->get('/dashboard/profile',[\App\Controller\UserController::class,'profile']);
 $router->post('/dashboard/profile/update',[\App\Controller\UserController::class,'editProfile']);

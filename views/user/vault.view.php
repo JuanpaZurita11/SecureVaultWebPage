@@ -196,6 +196,7 @@ unset($archivo);
                 <h3 class="modal-title">Gestionar Acceso</h3>
                 <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
             </div>
+
             <div class="modal-body">
                 <p class="section-desc">Ingresa los usuarios y sus llaves públicas en formato JSON para autorizar su descifrado.<br><br><strong>Formato:</strong> <code>{"usuario": "llave-publica"}</code></p>
 
@@ -204,12 +205,51 @@ unset($archivo);
                 <textarea id="jsonAccessInput" class="json-textarea" spellcheck="false" placeholder='{&#10;  "usuario_destino": "ssh-rsa AAAAB3N..."&#10;}'></textarea>
 
                 <div id="jsonFeedback" class="feedback-text"></div>
-            </div>
+
+                <div class="contacts-reference-section">
+                    <h4 class="section-title" style="font-size: 0.875rem; margin-bottom: 0.5rem;">Contactos Disponibles</h4>
+                    <div class="table-container">
+                        <table class="contacts-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Llave Pública (Clic para seleccionar)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($data[1] as $contacto):
+                                    // Usamos un valor por defecto solo por si alguna llave viene vacía
+                                    $llave = $contacto['llave_publica'] ?? 'ssh-rsa ...';
+                                ?>
+                                <tr>
+                                    <td class="user-cell">
+                                        <code>"<?php echo htmlspecialchars($contacto['usuario']); ?>"</code>
+                                    </td>
+                                    <td class="key-cell">
+                                        <input type="text" readonly
+                                               value="<?php echo htmlspecialchars($llave); ?>"
+                                               class="key-input"
+                                               onclick="this.select();"
+                                               title="Haz clic para seleccionar y copiar">
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn-cancel">Cancelar</button>
-                <button type="button" id="saveAccessBtn" class="btn-submit" disabled>
+                <form action="/php/dashboard/updateShareConfig" method="POST">
+                    <input type="hidden" name="_csrf" value="<?php echo generateToken() ?>">
+                    <input type="hidden" name="archivoUpdate" id="updateFileTarget">
+                    <input type="hidden" name="destinatarios" id="shareList">
+                    <button type="submit" id="saveAccessBtn" class="btn-submit" disabled>
                     <i class="fa-solid fa-floppy-disk"></i> Guardar Accesos
-                </button>
+                    </button>
+                </form>
             </div>
         </div>
 </div>

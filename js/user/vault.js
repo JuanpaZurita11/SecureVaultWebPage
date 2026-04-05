@@ -106,13 +106,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 5. MODAL DE GESTIÓN DE ACCESOS (JSON) ---
+   // =========================================
+    // 5. MODAL DE GESTIÓN DE ACCESOS (JSON)
+    // =========================================
+
     const accessFileId = document.getElementById('accessFileId');
     const jsonAccessInput = document.getElementById('jsonAccessInput');
     const jsonFeedback = document.getElementById('jsonFeedback');
     const saveAccessBtn = document.getElementById('saveAccessBtn');
+    const updateFileTarget = document.getElementById('updateFileTarget');
+    const recipients = document.getElementById('shareList');
 
-    // 1. ABRIR Y CARGAR DATOS
+    // 1. ABRIR MODAL Y CARGAR DATOS
     document.getElementById('fileBody').addEventListener('click', (e) => {
         const shareBtn = e.target.closest('.action-btn.share');
 
@@ -120,15 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = shareBtn.closest('.file-row');
             const fileId = row.dataset.id;
 
-            // Extraer el JSON del atributo del botón
+            // Extraer el JSON del atributo del botón (inyectado por PHP)
             const rawData = shareBtn.dataset.destinatarios;
-            let formattedJson = '{\n  \n}'; // Valor por defecto
+            let formattedJson = '{\n  \n}'; // Plantilla por defecto
 
-            // Si hay datos, los formateamos para que se vean bien (con saltos de línea y sangría)
             if (rawData && rawData !== '[]' && rawData !== '{}' && rawData !== 'null') {
                 try {
                     const parsedData = JSON.parse(rawData);
-                    formattedJson = JSON.stringify(parsedData, null, 2); // El '2' añade la sangría
+                    // Formatear con sangría de 2 espacios para facilitar la lectura
+                    formattedJson = JSON.stringify(parsedData, null, 2);
                 } catch(err) {
                     console.error("Error al parsear el JSON existente:", err);
                 }
@@ -138,17 +143,20 @@ document.addEventListener('DOMContentLoaded', () => {
             accessFileId.value = fileId;
             jsonAccessInput.value = formattedJson;
 
-            // Disparar el evento 'input' manualmente para que se valide de inmediato y se ponga verde
+            updateFileTarget.value = fileId;
+
+            // Disparar la validación visual inmediatamente al abrir
             jsonAccessInput.dispatchEvent(new Event('input'));
 
             openModal(accessModal);
         }
     });
 
-    // 2. VALIDACIÓN (Esto se queda igual que antes)
+    // 2. VALIDACIÓN EN TIEMPO REAL
     jsonAccessInput.addEventListener('input', () => {
         const value = jsonAccessInput.value.trim();
 
+        // Estado inicial o vacío
         if (value === "" || value === "{" || value === "{\n  \n}") {
             jsonFeedback.textContent = "";
             jsonAccessInput.classList.remove('is-invalid', 'is-valid');
@@ -157,7 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            recipients.value = value;
             const parsed = JSON.parse(value);
+
+            // Validar que sea estrictamente un objeto (diccionario), no un array ni un primitivo
             if (typeof parsed !== 'object' || Array.isArray(parsed) || parsed === null) {
                 throw new Error("Debe ser un objeto: { 'usuario': 'llave' }");
             }
@@ -176,50 +187,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 3. GUARDAR CAMBIOS (AJAX / Fetch API)
-    saveAccessBtn.addEventListener('click', async () => {
-        const fileId = accessFileId.value;
-        const jsonString = jsonAccessInput.value;
-
-        // Feedback visual: cambiamos el botón a estado "cargando"
-        const originalBtnText = saveAccessBtn.innerHTML;
-        saveAccessBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
-        saveAccessBtn.disabled = true;
-
-        try {
-            // Aquí haces la petición a tu backend PHP
-            const response = await fetch('/ruta/a/tu/controlador_guardar_json.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id_archivo: fileId,
-                    destinatarios: JSON.parse(jsonString) // Mandamos el objeto limpio
-                })
-            });
-
-            if (!response.ok) throw new Error('Error en el servidor');
-
-            // Si se guardó bien, actualizamos el data-attribute en el HTML
-            // Así si el usuario vuelve a abrir el modal, verá los cambios sin recargar la página
-            const row = document.querySelector(`.file-row[data-id="${fileId}"]`);
-            if (row) {
-                const shareBtn = row.querySelector('.action-btn.share');
-                // Guardamos la versión "limpia" de vuelta en el botón
-                shareBtn.dataset.destinatarios = JSON.stringify(JSON.parse(jsonString));
-            }
-
-            closeModal(accessModal);
-
-        } catch (error) {
-            console.error('Error guardando:', error);
-            jsonFeedback.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> Error de conexión. Intenta de nuevo.";
-            jsonFeedback.className = 'feedback-text error';
-        } finally {
-            // Restauramos el botón
-            saveAccessBtn.innerHTML = originalBtnText;
-            saveAccessBtn.disabled = false;
-        }
-    });
 });

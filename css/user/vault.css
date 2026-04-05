@@ -124,3 +124,75 @@
 }
 .feedback-text.error { color: #ef4444; }
 .feedback-text.success { color: #16a34a; }
+
+/* =========================================
+   5. TABLA DE CONTACTOS EN MODAL JSON
+========================================= */
+.contacts-reference-section {
+    margin-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+}
+
+.table-container {
+    max-height: 140px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+}
+
+.table-container::-webkit-scrollbar { width: 4px; }
+.table-container::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+
+.contacts-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+}
+
+.contacts-table th, .contacts-table td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.contacts-table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.contacts-table td.user-cell code {
+    font-weight: 600;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    user-select: all; /* Un clic selecciona toda la palabra */
+}
+
+/* Estilo para el campo que contiene la llave larga */
+.key-input {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    color: #64748b;
+    background-color: transparent;
+    cursor: copy;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.key-input:hover, .key-input:focus {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+    color: #1e293b;
+}

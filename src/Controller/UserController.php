@@ -63,4 +63,9 @@ class UserController extends AbstractController{
     $this->redirect('/dashboard');
 
   }
+
+  public function updateShareConfig(){
+    $this->userRepository->updateRecipients((int) $_POST['archivoUpdate'], $_POST['destinatarios']);
+    $this->redirect('/dashboard');
+  }
 }
