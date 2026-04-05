@@ -1,19 +1,17 @@
-/* --- ESTILOS RECREADOS DE LA IMAGEN DE REFERENCIA (SecureVault Login) --- */
-
+/* --- ESTILOS EXISTENTES SE MANTIENEN --- */
 :root {
-    --bg-color: #0d1117;          /* Fondo muy oscuro de la página */
-    --vault-bg: #161b22;         /* Fondo de la tarjeta central */
-    --text-primary: #c9d1d9;      /* Texto general */
-    --text-muted: #8b949e;       /* Texto secundario (año, link) */
-    --accent-blue: #58a6ff;      /* El 'Vault' en el título */
-    --accent-green: #238636;     /* Botón Sign In/Crear Cuenta */
+    --bg-color: #0d1117;
+    --vault-bg: #161b22;
+    --text-primary: #c9d1d9;
+    --text-muted: #8b949e;
+    --accent-blue: #58a6ff;
+    --accent-green: #238636;
     --accent-green-hover: #2ea043;
-    --input-bg: #0d1117;         /* Fondo de los inputs */
-    --border-color: #30363d;     /* Bordes de la tarjeta */
+    --input-bg: #0d1117;
+    --border-color: #30363d;
     --input-border: #30363d;
+    --error-red: #f85149; /* Nuevo color para errores */
 }
-
-
 
 body {
     margin: 0;
@@ -27,7 +25,6 @@ body {
     height: 100vh;
 }
 
-/* --- TARJETA CENTRAL (Replicada de image_0.png) --- */
 .login-container {
     background-color: var(--vault-bg);
     width: 350px;
@@ -38,14 +35,13 @@ body {
     text-align: center;
 }
 
-/* Cabecera del Logo */
 .header-logo .logo-icon {
     display: inline-flex;
     justify-content: center;
     align-items: center;
     width: 60px;
     height: 60px;
-    background-color: #f1e05a; /* Color amarillo del icono */
+    background-color: #f1e05a;
     color: #161b22;
     font-size: 30px;
     border-radius: 10px;
@@ -58,9 +54,7 @@ body {
     font-weight: 600;
 }
 
-.header-logo h1 span {
-    color: var(--accent-blue);
-}
+.header-logo h1 span { color: var(--accent-blue); }
 
 .header-logo p {
     color: var(--text-muted);
@@ -69,10 +63,10 @@ body {
     margin-bottom: 30px;
 }
 
-/* --- FORMULARIO E INPUTS (Replicados de image_0.png) --- */
 .input-group {
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* Aumentado para dar espacio al error */
+    text-align: left;
 }
 
 .input-group input {
@@ -80,11 +74,16 @@ body {
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
     color: var(--text-primary);
-    padding: 12px 12px 12px 40px; /* Padding izquierdo para el ícono */
+    padding: 12px 12px 12px 40px;
     border-radius: 6px;
-    box-sizing: border-box; /* Importante para el padding */
+    box-sizing: border-box;
     font-size: 14px;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
+}
+
+/* Estado de error en el input */
+.input-group input.error {
+    border-color: var(--error-red);
 }
 
 .input-group input:focus {
@@ -96,13 +95,20 @@ body {
 .input-group .icon {
     position: absolute;
     left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 13px;
     color: var(--text-muted);
     font-size: 16px;
 }
 
-/* --- BOTÓN DE REGISTRO (Mismo verde de image_0.png) --- */
+/* Mensaje de error */
+.error-message {
+    color: var(--error-red);
+    font-size: 11px;
+    margin-top: 4px;
+    height: 14px; /* Evita que el formulario "salte" al aparecer el texto */
+    font-weight: 400;
+}
+
 button#btnRegister {
     width: 100%;
     background-color: var(--accent-green);
@@ -115,18 +121,15 @@ button#btnRegister {
     cursor: pointer;
     transition: background-color 0.2s;
     text-transform: uppercase;
-    margin-top: 15px;
+    margin-top: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px; /* Espacio entre texto e icono */
+    gap: 10px;
 }
 
-button#btnRegister:hover {
-    background-color: var(--accent-green-hover);
-}
+button#btnRegister:hover { background-color: var(--accent-green-hover); }
 
-/* Link para volver al login */
 .sign-up-link {
     font-size: 12px;
     color: var(--text-muted);
@@ -140,8 +143,4 @@ button#btnRegister:hover {
     color: var(--accent-blue);
     text-decoration: none;
     font-weight: 600;
-}
-
-.sign-up-link a:hover {
-    text-decoration: underline;
 }

@@ -1,38 +1,71 @@
-// register.js - JS Vanilla para SecureVault
-
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('registerForm');
-    const emailInput = document.getElementById('email');
-    const userInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
 
-    registerForm.addEventListener('submit', async (e) => {
-        // 1. Prevenir el envío automático (esto es clave para CSE)
+    // Función para mostrar error en un campo específico
+    const showError = (inputId, message) => {
+        const input = document.getElementById(inputId);
+        const errorContainer = input.nextElementSibling; // El div.error-message
+
+        input.classList.add('error');
+        errorContainer.innerText = message;
+    };
+
+    // Función para limpiar todos los errores
+    const clearErrors = () => {
+        const inputs = registerForm.querySelectorAll('input');
+        const messages = registerForm.querySelectorAll('.error-message');
+
+        inputs.forEach(input => input.classList.remove('error'));
+        messages.forEach(msg => msg.innerText = '');
+    };
+
+    registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        clearErrors();
 
-        // 2. Recuperar valores limpios
-        const email = emailInput.value;
-        const username = userInput.value;
-        const plainPassword = passwordInput.value;
+        let hasErrors = false;
 
-        // --- INICIO DE LA LÓGICA DE SECUREVAULT ---
-        // Aquí es donde, en el futuro, derivaremos las claves
-        // y cifraremos los metadatos del usuario antes de enviarlos.
+        // 1. Capturar valores
+        const email = document.getElementById('email').value.trim();
+        const nombre = document.getElementById('nombre').value.trim();
+        const apellido = document.getElementById('apellido').value.trim();
+        const password = document.getElementById('password').value;
 
-        console.log("Formulario interceptado.");
-        console.log(`Usuario: ${username}, Correo: ${email}`);
-        console.warn("¡OJO! La contraseña sigue en plano. Falta implementar el cifrado del lado del cliente antes del envío.");
+        // 2. Validaciones campo por campo
+        if (!email) {
+            showError('email', 'El correo es obligatorio');
+            hasErrors = true;
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('email', 'Formato de correo inválido');
+                hasErrors = true;
+            }
+        }
 
-        /*
-           Ejemplo de flujo futuro (CSE):
-           1. Derivar una llave AES de 'plainPassword' (usando PBKDF2).
-           2. Cifrar 'username' y 'email' con esa llave.
-           3. Generar una clave pública/privada (RSA) para compartir archivos.
-           4. Enviar datos CIFRADOS al servidor PHP.
-        */
+        if (!nombre) {
+            showError('nombre', 'El nombre es obligatorio');
+            hasErrors = true;
+        }
 
-        // Por ahora, simulamos un envío directo para validar que funciona el HTML.
-        // Solo habilitar para pruebas, NUNCA enviar la clave maestra en plano.
-        // this.submit();
+        if (!apellido) {
+            showError('apellido', 'El apellido es obligatorio');
+            hasErrors = true;
+        }
+
+        if (!password) {
+            showError('password', 'La contraseña es obligatoria');
+            hasErrors = true;
+        } else if (password.length < 6) {
+            showError('password', 'Mínimo 6 caracteres');
+            hasErrors = true;
+        }
+
+        // 3. Envío si todo está bien
+        if (!hasErrors) {
+            console.log("Datos listos para enviar:", { email, nombre, apellido });
+            alert("¡Formulario validado correctamente!");
+            // registerForm.submit(); // Descomenta para enviar realmente
+        }
     });
 });

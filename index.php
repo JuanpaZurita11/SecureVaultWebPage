@@ -37,11 +37,12 @@ $container->bind(\App\Support\CsrfHelper::class, function(){
 
 $router = new \App\Support\Router($container);
 
-$router->get('/login',[\App\Controller\AuthController::class,'showLogin'],false);
+$router->get('/',[\App\Controller\AuthController::class,'showLogin'],false);
 $router->post('/login',[\App\Controller\AuthController::class,'handleLogin'],false);
 $router->get('/logout',[\App\Controller\AuthController::class,'handleLogout'],false);
 
 $router->get('/signup', [\App\Controller\AuthController::class,'signup'],false);
+$router->post('/signup/register',[\App\Controller\AuthController::class,'register'],false);
 
 
 $router->get('/dashboard',[\App\Controller\UserController::class,'vault']);

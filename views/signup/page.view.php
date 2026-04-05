@@ -18,20 +18,29 @@
             <p>Criptografía 2026 - FI</p>
         </div>
 
-        <form id="registerForm">
+        <form id="registerForm" action="/signup/register" method="POST" novalidate>
             <div class="input-group">
                 <i class="fas fa-envelope icon"></i>
-                <input type="email" id="email" name="email" placeholder="Correo Electrónico" required>
+                <input type="email" id="email" name="email" placeholder="Correo Electrónico">
+                <div class="error-message"></div>
             </div>
 
             <div class="input-group">
                 <i class="fas fa-user icon"></i>
-                <input type="text" id="username" name="username" placeholder="Nombre de Usuario" required>
+                <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+                <div class="error-message"></div>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-users icon"></i>
+                <input type="text" id="apellido" name="apellido" placeholder="Apellido">
+                <div class="error-message"></div>
             </div>
 
             <div class="input-group">
                 <i class="fas fa-lock icon"></i>
-                <input type="password" id="password" name="password" placeholder="Contraseña de la Cuenta" required>
+                <input type="password" id="password" name="password" placeholder="Contraseña para la cuenta">
+                <div class="error-message"></div>
             </div>
 
             <button type="submit" id="btnRegister">

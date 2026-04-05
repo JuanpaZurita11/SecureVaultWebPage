@@ -49,6 +49,11 @@ class AuthController extends AbstractController{
     $this->render($base='signup',$page='page',$layout=false,$params=[]);
   }
 
+  public function register(){
+    var_dump($_POST);
+    die();
+  }
+
   //Se queda en el controlador, involucra a la base de datos
 
   private function checkCredentials(string $username, string $password): bool{
@@ -79,6 +84,6 @@ class AuthController extends AbstractController{
 
   public function handleLogout(){
     $this->authService->logout();
-    header('Location: /php/login');
+    header('Location: /php');
   }
 }

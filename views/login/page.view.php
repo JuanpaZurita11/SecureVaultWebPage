@@ -26,7 +26,7 @@
         </div>
         <?php endif; ?>
 
-        <form id="loginForm" action="/php/login" method="POST">
+        <form id="loginForm" action="/php/signup/register" method="POST">
 
         <input type="hidden" name="_csrf" value="<?php echo generateToken() ?>">
 
