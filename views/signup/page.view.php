@@ -18,7 +18,12 @@
             <p>Criptografía 2026 - FI</p>
         </div>
 
-        <form id="registerForm" action="/signup/register" method="POST" novalidate>
+        <form id="registerForm" action="php/signup/register" method="POST">
+        <input type="hidden" name="_csrf" value="<?php echo generateToken() ?>">
+
+            <input type="hidden" name="publicKey" id="public_key" value="" >
+            <input type="hidden" name="privateKey" id="private_key" value="">
+
             <div class="input-group">
                 <i class="fas fa-envelope icon"></i>
                 <input type="email" id="email" name="email" placeholder="Correo Electrónico">
@@ -49,11 +54,10 @@
         </form>
 
         <div class="sign-up-link">
-            YA TENGO CUENTA. <a href="/php/login">LOG IN</a>
+            YA TENGO CUENTA. <a href="/php/">LOG IN</a>
         </div>
     </div>
 
-    <script src="/php/js/signup.js"></script>
-
+    <script type="module" src="/php/js/signup.js"></script>
 </body>
 </html>

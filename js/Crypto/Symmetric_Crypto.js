@@ -1,141 +1,197 @@
-class SecureEncryption {
+import { xchacha20poly1305 } from "./src/chacha.js";
+import { randomBytes } from "./src/utils.js";
 
-    // --- MÉTODOS AUXILIARES ---
-    // Convierte un ArrayBuffer a un string Hexadecimal
-    static buf2hex(buffer) {
-        return Array.from(new Uint8Array(buffer))
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
+
+
+
+export class KeyManger{
+
+    /*
+        Convert an ArrayBuffer into a string
+        from https://developer.chrome.com/blog/how-to-convert-arraybuffer-to-and-from-string/
+    */
+    ab2str(buf) {
+        return String.fromCharCode.apply(null, new Uint8Array(buf));
     }
 
-    // Convierte un string Hexadecimal a un ArrayBuffer
-    static hex2buf(hexString) {
-        const bytes = new Uint8Array(Math.ceil(hexString.length / 2));
-        for (let i = 0; i < bytes.length; i++) {
-            bytes[i] = parseInt(hexString.substring(i * 2, i * 2 + 2), 16);
-        }
-        return bytes.buffer;
-    }
-
-    // Equivalente a json.dumps(sort_keys=True).
-    // Garantiza que el JSON siempre se formatee igual para que la firma AAD no falle.
-    static stringifySorted(obj) {
-        if (typeof obj !== 'object' || obj === null) return JSON.stringify(obj);
-        if (Array.isArray(obj)) return `[${obj.map(SecureEncryption.stringifySorted).join(',')}]`;
-        const keys = Object.keys(obj).sort();
-        const mapped = keys.map(k => `"${k}":${SecureEncryption.stringifySorted(obj[k])}`);
-        return `{${mapped.join(',')}}`;
-    }
-
-    // --- LÓGICA PRINCIPAL ---
-
-    async generateKey() {
-        const key = await window.crypto.subtle.generateKey(
-            { name: "AES-GCM", length: 256 },
-            true, // extraíble
-            ["encrypt", "decrypt"]
+    /**
+        SubjectPublicKeyInfor export
+     *@returns {string}
+    */
+    async exportPublicCryptoKey(publicCryptoKey){
+        const exported = await window.crypto.subtle.exportKey(
+            "spki",
+            publicCryptoKey
         );
-        // Retornamos los bytes crudos (ArrayBuffer) para imitar el comportamiento de Python
-        return await window.crypto.subtle.exportKey("raw", key);
+        const exportedAsString = this.ab2str(exported);
+        const exportedAsBase64 = window.btoa(exportedAsString);
+        return exportedAsBase64;
     }
 
-    buildMetadata(file) {
-        // En JS, usamos la propiedad .name del objeto File en lugar de os.path.basename
-        const filename = file.name;
-        const timestamp = new Date().toISOString(); // Equivale a datetime.now(timezone.utc).isoformat()
-        return {
-            algorithm_version: "AES-GCM",
-            encryption_parameters: {
-                key_size_bits: 256,
-                nonce_size_bytes: 12,
-                tag_size_bytes: 16
+    /**
+        PKCS #8
+     *@returns {string}
+    */
+    async exportPrivateCryptoKey(privateCryptoKey){
+        const exported = await window.crypto.subtle.exportKey('pkcs8',privateCryptoKey);
+        const exportedAsString = this.ab2str(exported);
+        const exportedAsBase64 = window.btoa(exportedAsString);
+        return exportedAsBase64;
+    }
+
+    async generate_key_pair(){
+        const keyPair = await window.crypto.subtle.generateKey(
+            {
+                name: "RSA-OAEP",
+                modulusLength: 4096,
+                publicExponent: new Uint8Array([1, 0, 1]),
+                hash: "SHA-256",
             },
-            filename: filename,
-            creation_timestamp: timestamp
-        };
+            true,
+            ["encrypt", "decrypt"],
+        );
+
+        const publicKey = await this.exportPublicCryptoKey(keyPair.publicKey);
+        const privateKey = await this.exportPrivateCryptoKey(keyPair.privateKey);
+
+        return {publicKey, privateKey}
     }
 
-    async encryptFile(file, rawKeyBuffer) {
-        if (!(rawKeyBuffer instanceof ArrayBuffer || rawKeyBuffer instanceof Uint8Array) || rawKeyBuffer.byteLength !== 32) {
-            throw new Error("La llave debe ser un ArrayBuffer/Uint8Array y tener una longitud de 256 bits (32 bytes)");
+}
+
+export class Encryption{
+
+
+    /*
+        Convert a string into an ArrayBuffer
+        from https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
+    */
+    str2ab(str) {
+        const buf = new ArrayBuffer(str.length);
+        const bufView = new Uint8Array(buf);
+        for (let i = 0, strLen = str.length; i < strLen; i++){
+            bufView[i] = str.charCodeAt(i);
         }
-
-        // Importar la llave cruda al formato que entiende Web Crypto
-        const cryptoKey = await window.crypto.subtle.importKey(
-            "raw", rawKeyBuffer, { name: "AES-GCM" }, false, ["encrypt"]
-        );
-
-        // Leer los bytes del archivo
-        const data = await file.arrayBuffer();
-
-        // Vector de Inicialización (Nonce)
-        const nonce = window.crypto.getRandomValues(new Uint8Array(12));
-
-        // Additional Authenticated Data (Metadata)
-        const metadata = this.buildMetadata(file);
-        const metadataString = SecureEncryption.stringifySorted(metadata);
-        const metadataBytes = new TextEncoder().encode(metadataString);
-
-        // Algoritmo: Encriptar (Web Crypto API concatena automáticamente el tag al final)
-        const encryptionBuffer = await window.crypto.subtle.encrypt(
-            { name: "AES-GCM", iv: nonce, additionalData: metadataBytes },
-            cryptoKey,
-            data
-        );
-
-        // Separar CipherText y Authentication TAG para coincidir con tu contenedor de Python
-        const encryptionArray = new Uint8Array(encryptionBuffer);
-        const ciphertext = encryptionArray.slice(0, -16);
-        const tag = encryptionArray.slice(-16);
-
-        return {
-            metadata: metadata,
-            nonce: SecureEncryption.buf2hex(nonce),
-            ciphertext: SecureEncryption.buf2hex(ciphertext),
-            tag: SecureEncryption.buf2hex(tag)
-        };
+        return buf;
     }
 
-    async decryptFile(container, rawKeyBuffer, customFilename = null) {
-        if (!(rawKeyBuffer instanceof ArrayBuffer || rawKeyBuffer instanceof Uint8Array) || rawKeyBuffer.byteLength !== 32) {
-            throw new Error("La llave debe ser de 256 bits (32 bytes).");
-        }
 
-        const cryptoKey = await window.crypto.subtle.importKey(
-            "raw", rawKeyBuffer, { name: "AES-GCM" }, false, ["decrypt"]
+    /**
+     *@param {string} key
+    */
+    prepareKeyforEncryption(publicKey){
+
+        const binaryDerString = window.atob(publicKey);
+        const binaryDer = this.str2abstr2ab(binaryDerString);
+
+        return window.crypto.subtle.importKey(
+        "spki",
+        binaryDer,
+        {
+            name: "RSA-OAEP",
+            hash: "SHA-256"
+        },
+        true,
+        ["encrypt"]
+        );
+    }
+
+    /**
+     *@typedef {Object} UserInfo
+     *@property {string} username
+     *@property {string} publicKey
+
+     *@typedef {Object} CipherObject
+     *@property {Uint8Array} data
+     *@property {string} file_name
+     *@property {string} extension
+     *@property {string} ownerKey
+     *@property {UserInfo[]} recipients
+
+     *@param {CipherObject} cipherObject
+    */
+    async encrypt_file(cipherObject){
+
+
+        // Parameters for Symmetric Encryption
+        const key = randomBytes(32);
+        const nonce = randomBytes(24);
+
+
+        const ownerCryptoKey = this.prepareKeyforEncryption(cipherObject.ownerKey);
+        cipherObject.ownerKey = await window.crypto.subtle.encrypt(
+            {
+                name: "RSA-OAEP"
+            },
+            ownerCryptoKey,
+            key
         );
 
-        const metadata = container.metadata;
-        if (!metadata) throw new Error("El contenedor no tiene el campo metadata");
-
-        const filename = customFilename || metadata.filename || "decrypted_file.txt";
-
-        const nonce = SecureEncryption.hex2buf(container.nonce);
-        const ciphertext = SecureEncryption.hex2buf(container.ciphertext);
-        const tag = SecureEncryption.hex2buf(container.tag);
-
-        // Reconstruir los AAD exactamente igual
-        const metadataString = SecureEncryption.stringifySorted(metadata);
-        const metadataBytes = new TextEncoder().encode(metadataString);
-
-        // En Web Crypto API, para desencriptar, debemos concatenar el ciphertext y el tag
-        const dataToDecrypt = new Uint8Array(ciphertext.byteLength + tag.byteLength);
-        dataToDecrypt.set(new Uint8Array(ciphertext), 0);
-        dataToDecrypt.set(new Uint8Array(tag), ciphertext.byteLength);
-
-        try {
-            const decryptedBuffer = await window.crypto.subtle.decrypt(
-                { name: "AES-GCM", iv: nonce, additionalData: metadataBytes },
-                cryptoKey,
-                dataToDecrypt
+        for (const recipient of cipherObject.recipients){
+            const recipientCryptoKey = this.prepareKeyforEncryption(recipient.publicKey);
+            recipient.key = await window.crypto.subtle.encrypt(
+                {
+                    name: "RSA-OAEP"
+                },
+                recipientCryptoKey,
+                key
             );
-
-            // Al no haber rutas del sistema, retornamos un objeto File (Blob) que el navegador puede descargar
-            console.log("Archivo descifrado correctamente en memoria");
-            return new File([decryptedBuffer], filename, { type: "application/octet-stream" });
-
-        } catch (e) {
-            throw new Error("Error: autenticación fallida. El archivo fue modificado o la clave es incorrecta");
         }
+
+        //Metadata
+        const metaData = {
+            symmetric_algorithm: "XChaCha20+Poly1305",
+            key_size_bits: 256,
+            nonce_size_bytes: 24,
+            tag_size_bytes: 16,
+            asymmetric_algorithm: "RSA-OAEP",
+            ownerKey: ownerKey,
+            recipients: recipients,
+            rsa_key_size_bits: 2048,
+            file_name: cipherObject.file_name,
+            extension: extension,
+            created_at: new Date().toISOString()
+        };
+
+
+        const metaDataString = JSON.stringify(metaData);
+        const aad = new TextEncoder().encode(metaDataJSON);
+        const chacha = xchacha20poly1305(key, nonce, aad);
+        const cipherText = chacha.encrypt(cipherObject.data);
+
+        return {cipherText, metaDataString};
     }
+
+    prepareKeyforDecryption(privateKey){
+        const binaryDerString = window.atob(privateKey);
+        const binaryDer = this.str2ab(binaryDerString);
+
+        return window.crypto.subtle.importKey(
+        "pkcs8",
+        binaryDer,
+        {
+            name: "RSA-OAEP",
+            hash: "SHA-256",
+        },
+        true,
+        ["decrypt"]
+        );
+    }
+
+    async decrypt_file(cipherText,metaDataString,recipientKey,privateKey,nonce){
+
+        const cryptoKey = this.prepareKeyforDecryption(privateKey);
+        const symmetricKey = await window.crypto.subtle.decrypt(
+            {
+                name: "RSA-OAEP"
+            },
+            cryptoKey,
+            recipientKey
+        );
+        const aad = new TextEncoder().encode(metaDataString);
+        const chacha = xchacha20poly1305(symmetricKey, nonce, aad);
+        const data = chacha.decrypt(cipherText);
+        return data;
+    }
+
 }

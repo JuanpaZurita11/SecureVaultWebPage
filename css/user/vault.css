@@ -196,3 +196,23 @@
     background-color: #f8fafc;
     color: #1e293b;
 }
+
+.user-welcome-section {
+    margin: 0.5rem 0 1rem 0;
+    padding-left: 0.25rem;
+}
+
+.welcome-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.user-highlight {
+    color: #2563eb; /* El azul primario que usas en el layout */
+}
+
+.user-welcome-section .section-desc {
+    margin-bottom: 0; /* Ajuste para que no se separe tanto de las acciones */
+}

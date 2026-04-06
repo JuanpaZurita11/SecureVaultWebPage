@@ -97,7 +97,7 @@
     <script src="/php/js/user/layout.js"></script>
 
     <?php foreach ($extra_JS as $script): ?>
-    <script src="/php/js/user/<?= htmlspecialchars($script) ?>.js"></script>
+    <script type="module" src="/php/js/user/<?= htmlspecialchars($script) ?>.js"></script>
     <?php endforeach; ?>
 </body>
 </html>

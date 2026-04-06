@@ -59,6 +59,11 @@ unset($archivo);
 
 <div class="vault-container">
 
+   <div class="user-welcome-section">
+        <h2 class="welcome-text">Panel de control de <span class="user-highlight">@<?php echo htmlspecialchars($_SESSION['username']); ?></span></h2>
+        <p class="section-desc">Gestiona tus archivos cifrados y permisos de acceso de forma segura.</p>
+    </div>
+
     <div class="vault-stats">
         <div class="stat-card">
             <div class="stat-icon blue"><i class="fa-solid fa-file-shield"></i></div>
@@ -82,6 +87,7 @@ unset($archivo);
             </div>
         </div>
     </div>
+
 
     <div class="vault-actions" style="justify-content: flex-end;">
         <div class="action-buttons">

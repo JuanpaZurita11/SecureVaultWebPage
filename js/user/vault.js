@@ -1,3 +1,5 @@
+import { Encryption  } from "../Crypto/Symmetric_Crypto.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- SELECTORES PRINCIPALES ---
     const fileDisplay = document.getElementById('fileDisplay');
@@ -186,5 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
             saveAccessBtn.disabled = true;
         }
     });
+
 
 });

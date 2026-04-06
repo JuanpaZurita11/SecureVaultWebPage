@@ -59,7 +59,7 @@ function getInitials($name) {
                     </div>
 
                     <div class="col-actions">
-                        <a href="/php/dashboard/search_vault?user=<?php echo urlencode($contacto['usuario']); ?>" class="action-btn view" title="Visitar Bóveda">
+                        <a href="/php/dashboard/search_vaults?username=<?php echo urlencode($contacto['usuario']); ?>" class="action-btn view" title="Visitar Bóveda">
                             <i class="fa-solid fa-folder-open"></i>
                         </a>
                         <button class="action-btn delete btn-delete-contact" title="Eliminar Contacto" data-id="<?php echo $contacto['id']; ?>" data-username="<?php echo htmlspecialchars($contacto['usuario']); ?>">

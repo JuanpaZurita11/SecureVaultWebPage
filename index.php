@@ -61,9 +61,3 @@ $router->post('/dashboard/profile/update',[\App\Controller\UserController::class
 
 $router->dispatch();
 
-
-//require __DIR__ .'/views/login/page.view.php';
-
-
-
-//render("index.view",[]);
