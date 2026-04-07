@@ -11,9 +11,18 @@ class UserController extends AbstractController{
     $this->render($base='user',$view='vault',$layout=true,$params=['extra_CSS' => ['vault'], 'extra_JS' => ['vault'],'pagina' => 0,'data' => $data]);
   }
 
-  public function uploadPage(){
+  public function uploadStep1(){
     $data = $this->userRepository->getInformationforUpload($_SESSION['userId']);
-    $this->render($base='user',$view='upload',$layout=true,$params=['extra_CSS' => ['upload'], 'extra_JS' => ['upload'],
+    $this->render($base='user',$view='upload1',$layout=true,$params=['extra_CSS' => ['cipher'], 'extra_JS' => [],
+    'pagina' => 4, 'data' => $data]);
+  }
+
+  public function uploadStep2(){
+    $recipients = $this->userRepository->getRecipientsData($_POST['contactos_seleccionados']);
+    //$ownerKey = array_shift($recipients); //Se quito esto para la demo
+    $ownerKey = $recipients[0];
+    $data = ["ownerKey" => $ownerKey['llave_publica'], "recipients" => $recipients];
+    $this->render($base='user',$view='upload2',$layout=true,$params=['extra_CSS' => ['cipher'], 'extra_JS' => ['upload'],
     'pagina' => 4, 'data' => $data]);
   }
 
@@ -81,5 +90,14 @@ class UserController extends AbstractController{
   public function updateShareConfig(){
     $this->userRepository->updateRecipients((int) $_POST['archivoUpdate'], $_POST['destinatarios']);
     $this->redirect('/dashboard');
+  }
+
+  public function handleUpload(){
+    $this->redirect('/upload');
+  }
+
+  public function handleDecrypt(){
+    $privateKey = $this->userRepository->getUserPrivateKey($_SESSION['userId']);
+    $this->render($base='user',$view='decrypt',$layout=true,$params=['extra_CSS' => ['cipher'],'extra_JS' =>['decrypt'], 'pagina' => 5, 'privateKey'=> $privateKey]);
   }
 }

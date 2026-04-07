@@ -16,7 +16,9 @@
             $titulo_pagina = 'Configuración';
             break;
         case 4:
-            $titulo_pagina = 'Dashoard\\Upload';
+            $titulo_pagina = 'Selección de Usuarios';
+        case 5:
+            $titulo_pagina = 'Descifrar';
         default:
             break;
     }
@@ -56,6 +58,12 @@
                 <p class="nav-title">Menú Principal</p>
                 <a href="/php/dashboard" class="nav-link <?= ($pagina == 0) ? 'active' : '' ?>">
                     <i class="fa-solid fa-hard-drive"></i><span>Mi Bóveda</span>
+                </a>
+                <a href="/php/upload" class="nav-link <?= ($pagina == 4) ? 'active' : '' ?>">
+                    <i class="fas fa-lock"></i><span>Cifrar</span>
+                </a>
+                <a href="/php/decrypt" class="nav-link" <?= ($pagina == 5) ? 'active' : '' ?>>
+                    <i class="fa-solid fa-lock-open"></i><span>Descifrar</span>
                 </a>
                 <a href="/php/dashboard/search_vaults" class="nav-link <?= ($pagina == 2) ? 'active' : '' ?>">
                     <i class="fa-solid fa-magnifying-glass"></i><span>Buscar</span>

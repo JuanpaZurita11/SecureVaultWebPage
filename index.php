@@ -46,8 +46,14 @@ $router->post('/signup/register',[\App\Controller\AuthController::class,'registe
 
 
 $router->get('/dashboard',[\App\Controller\UserController::class,'vault']);
-$router->get('/dashboard/upload',[\App\Controller\UserController::class,'uploadPage']);
-$router->post('/dashboard/upload/getRecipientsKeys',[\App\Controller\UserController::class,'uploadFile']);
+
+
+$router->get('/upload',[\App\Controller\UserController::class,'uploadStep1']);
+$router->post('/upload/recipients',[\App\Controller\UserController::class,'uploadStep2']);
+$router->post('/upload/now',[\App\Controller\UserController::class,'handleUpload']);
+
+$router->get('/decrypt',[\App\Controller\UserController::class,'handleDecrypt']);
+
 
 $router->post('/dashboard/delete',[\App\Controller\UserController::class,'deleteFile']);
 $router->post('/dashboard/updateShareConfig',[\App\Controller\UserController::class,'updateShareConfig']);

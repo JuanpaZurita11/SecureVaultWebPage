@@ -1,5 +1,5 @@
 import { xchacha20poly1305 } from "./src/chacha.js";
-import { randomBytes } from "./src/utils.js";
+import { randomBytes, bytesToHex, hexToBytes} from "./src/utils.js";
 
 
 
@@ -79,12 +79,12 @@ export class Encryption{
     /**
      *@param {string} key
     */
-    prepareKeyforEncryption(publicKey){
+    async prepareKeyforEncryption(publicKey){
 
         const binaryDerString = window.atob(publicKey);
-        const binaryDer = this.str2abstr2ab(binaryDerString);
+        const binaryDer = this.str2ab(binaryDerString);
 
-        return window.crypto.subtle.importKey(
+        return await window.crypto.subtle.importKey(
         "spki",
         binaryDer,
         {
@@ -99,12 +99,12 @@ export class Encryption{
     /**
      *@typedef {Object} UserInfo
      *@property {string} username
-     *@property {string} publicKey
+     *@property {string} key
 
      *@typedef {Object} CipherObject
      *@property {Uint8Array} data
      *@property {string} file_name
-     *@property {string} extension
+     *@property {string} type
      *@property {string} ownerKey
      *@property {UserInfo[]} recipients
 
@@ -118,24 +118,26 @@ export class Encryption{
         const nonce = randomBytes(24);
 
 
-        const ownerCryptoKey = this.prepareKeyforEncryption(cipherObject.ownerKey);
-        cipherObject.ownerKey = await window.crypto.subtle.encrypt(
+        const ownerCryptoKey = await this.prepareKeyforEncryption(cipherObject.ownerKey);
+        let encryptedKey  = await window.crypto.subtle.encrypt(
             {
                 name: "RSA-OAEP"
             },
             ownerCryptoKey,
             key
         );
+        cipherObject.ownerKey = bytesToHex(new Uint8Array(encryptedKey));
 
         for (const recipient of cipherObject.recipients){
-            const recipientCryptoKey = this.prepareKeyforEncryption(recipient.publicKey);
-            recipient.key = await window.crypto.subtle.encrypt(
+            const recipientCryptoKey = await this.prepareKeyforEncryption(recipient.key);
+            encryptedKey = await window.crypto.subtle.encrypt(
                 {
                     name: "RSA-OAEP"
                 },
                 recipientCryptoKey,
                 key
             );
+            recipient.key = bytesToHex(new Uint8Array(encryptedKey));
         }
 
         //Metadata
@@ -143,30 +145,30 @@ export class Encryption{
             symmetric_algorithm: "XChaCha20+Poly1305",
             key_size_bits: 256,
             nonce_size_bytes: 24,
+            nonce: bytesToHex(nonce),
             tag_size_bytes: 16,
             asymmetric_algorithm: "RSA-OAEP",
-            ownerKey: ownerKey,
-            recipients: recipients,
+            ownerKey: cipherObject.ownerKey,
+            recipients: cipherObject.recipients,
             rsa_key_size_bits: 2048,
             file_name: cipherObject.file_name,
-            extension: extension,
+            extension: cipherObject.type,
             created_at: new Date().toISOString()
         };
 
-
         const metaDataString = JSON.stringify(metaData);
-        const aad = new TextEncoder().encode(metaDataJSON);
+        const aad = new TextEncoder().encode(metaDataString);
         const chacha = xchacha20poly1305(key, nonce, aad);
         const cipherText = chacha.encrypt(cipherObject.data);
 
-        return {cipherText, metaDataString};
+        return {cipherText, metaData};
     }
 
-    prepareKeyforDecryption(privateKey){
+    async prepareKeyforDecryption(privateKey){
         const binaryDerString = window.atob(privateKey);
         const binaryDer = this.str2ab(binaryDerString);
 
-        return window.crypto.subtle.importKey(
+        return await window.crypto.subtle.importKey(
         "pkcs8",
         binaryDer,
         {
@@ -178,17 +180,26 @@ export class Encryption{
         );
     }
 
-    async decrypt_file(cipherText,metaDataString,recipientKey,privateKey,nonce){
+    /*
+    cipherText,metaDataString,recipientKey,privateKey,nonce
+    */
+    async decrypt_file(metaData,cipherText,privateKey,recipientKey){
 
-        const cryptoKey = this.prepareKeyforDecryption(privateKey);
-        const symmetricKey = await window.crypto.subtle.decrypt(
+        const cryptoKey = await this.prepareKeyforDecryption(privateKey);
+        const symmetricKeyBuffer = await window.crypto.subtle.decrypt(
             {
                 name: "RSA-OAEP"
             },
             cryptoKey,
-            recipientKey
+            hexToBytes(recipientKey)
         );
+
+        const symmetricKey = new Uint8Array(symmetricKeyBuffer);
+
+        const nonce = hexToBytes(metaData.nonce);
+        const metaDataString = JSON.stringify(metaData);
         const aad = new TextEncoder().encode(metaDataString);
+
         const chacha = xchacha20poly1305(symmetricKey, nonce, aad);
         const data = chacha.decrypt(cipherText);
         return data;

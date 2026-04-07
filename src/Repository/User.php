@@ -129,7 +129,6 @@ class User{
   }
 
   public function getRecipientsData(array $ids) {
-    $cleanIds = array_map('intval', $ids);
     // 1. Creamos un string de placeholders (?,?,?) basado en la cantidad de IDs
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
@@ -141,5 +140,14 @@ class User{
 
     // 4. Retornamos todos los registros con fetchAll
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+  }
+
+  public function getUserPrivateKey(int $id){
+    $stmt = $this->pdo->prepare("SELECT llave_privada FROM usuarios WHERE id = :id");
+    $stmt->bindValue(":id", $id);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC)['llave_privada'];
+
+  }
+
 }
