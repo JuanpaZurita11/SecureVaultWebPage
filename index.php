@@ -46,6 +46,9 @@ $router->post('/signup/register',[\App\Controller\AuthController::class,'registe
 
 
 $router->get('/dashboard',[\App\Controller\UserController::class,'vault']);
+$router->get('/dashboard/upload',[\App\Controller\UserController::class,'uploadPage']);
+$router->post('/dashboard/upload/getRecipientsKeys',[\App\Controller\UserController::class,'uploadFile']);
+
 $router->post('/dashboard/delete',[\App\Controller\UserController::class,'deleteFile']);
 $router->post('/dashboard/updateShareConfig',[\App\Controller\UserController::class,'updateShareConfig']);
 

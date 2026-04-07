@@ -29,7 +29,7 @@ class User{
   }
 
   public function getContactsofId(int $id){
-    $stmt = $this->pdo->prepare('SELECT c.id, u.usuario, u.nombre, u.apellido, u.llave_publica
+    $stmt = $this->pdo->prepare('SELECT c.id, u.usuario, u.nombre, u.apellido
             FROM usuarios u
             INNER JOIN contactos c ON u.id = c.contacto_id
             WHERE c.usuario_id = :id' );
@@ -116,6 +116,30 @@ class User{
     return $stmt->execute();
   }
 
+  public function getInformationforUpload(int $id){
+    $stmt = $this->pdo->prepare('SELECT u.usuario, u.id
+            FROM usuarios u
+            INNER JOIN contactos c ON u.id = c.contacto_id
+            WHERE c.usuario_id = :id' );
+    $stmt->bindValue(':id',$id);
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $stmt->execute();
+    $entry = $stmt->fetchAll();
+    return $entry;
+  }
 
+  public function getRecipientsData(array $ids) {
+    $cleanIds = array_map('intval', $ids);
+    // 1. Creamos un string de placeholders (?,?,?) basado en la cantidad de IDs
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
+    // 2. Preparamos la consulta con el IN
+    $stmt = $this->pdo->prepare("SELECT usuario, llave_publica FROM usuarios WHERE id IN ($placeholders)");
+
+    // 3. Ejecutamos pasando el array de IDs directamente
+    $stmt->execute($ids);
+
+    // 4. Retornamos todos los registros con fetchAll
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

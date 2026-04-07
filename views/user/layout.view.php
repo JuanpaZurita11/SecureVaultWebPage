@@ -2,9 +2,10 @@
     $extra_CSS ??= [];
     $extra_JS  ??= [];
 
-    $titulo_pagina = 'Dashboard';
-
     switch ($pagina) {
+        case 0:
+            $titulo_pagina = 'Dashoard';
+            break;
         case 1:
             $titulo_pagina = 'Mis contactos';
             break;
@@ -14,6 +15,8 @@
         case 3:
             $titulo_pagina = 'Configuración';
             break;
+        case 4:
+            $titulo_pagina = 'Dashoard\\Upload';
         default:
             break;
     }

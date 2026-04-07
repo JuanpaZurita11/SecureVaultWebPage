@@ -8,8 +8,22 @@ class UserController extends AbstractController{
 
   public function vault(){
     $data = $this->userRepository->viewVault((int) $_SESSION['userId']);
-    $this->render($base='user',$view='vault',$layout=true,$params=['extra_CSS' => ['vault'], 'extra_JS' => ['vault'],
-    'pagina' => 0, 'data' => $data]);
+    $this->render($base='user',$view='vault',$layout=true,$params=['extra_CSS' => ['vault'], 'extra_JS' => ['vault'],'pagina' => 0,'data' => $data]);
+  }
+
+  public function uploadPage(){
+    $data = $this->userRepository->getInformationforUpload($_SESSION['userId']);
+    $this->render($base='user',$view='upload',$layout=true,$params=['extra_CSS' => ['upload'], 'extra_JS' => ['upload'],
+    'pagina' => 4, 'data' => $data]);
+  }
+
+  public function uploadFile(){
+    var_dump($_POST);
+    $data = $this->userRepository->getRecipientsData($_POST['contactos_seleccionados']);
+    $data = array_shift($data);
+    $json = json_encode($data);
+    var_dump($json);
+    $this->render($base='support', $view='uploadFile', $layout=false,$params=[]);
   }
 
   public function contacts(){

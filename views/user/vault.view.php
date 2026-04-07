@@ -95,9 +95,9 @@ unset($archivo);
                 <button id="viewList" class="toggle-btn active" title="Vista de lista"><i class="fa-solid fa-list"></i></button>
                 <button id="viewGrid" class="toggle-btn" title="Vista de cuadrícula"><i class="fa-solid fa-table-cells-large"></i></button>
             </div>
-            <button class="btn-upload">
+            <a href="/php/dashboard/upload" class="btn-upload">
                 <i class="fa-solid fa-cloud-arrow-up"></i><span>Subir Archivo</span>
-            </button>
+            </a>
         </div>
     </div>
 
