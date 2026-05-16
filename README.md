@@ -1,18 +1,18 @@
-🔒 Secure Vault Web
+#🔒 Secure Vault Web
 
 Una aplicación web diseñada para la gestión segura de información, que incluye un sistema de autenticación, agenda de contactos y un almacén cifrado de archivos. El proyecto utiliza una arquitectura cliente-servidor local apoyada en tecnologías web estándar.
 
-🛠️ Entorno de Desarrollo
+#🛠️ Entorno de Desarrollo
 
 Para el desarrollo y pruebas locales de este proyecto se utiliza XAMPP, una distribución de Apache que integra MariaDB (MySQL), PHP y Perl. Este paquete emula un entorno de servidor web completo en una máquina local.
 
-📦 Componentes Principales
+## 📦 Componentes Principales
 
 + Servidor HTTP Apache: Procesa las peticiones entrantes, interpreta los archivos del proyecto y sirve las páginas web al navegador.
 
 + MySQL Database: Sistema de gestión de bases de datos relacionales utilizado para almacenar credenciales, llaves criptográficas y metadatos de los archivos.
 
-🚀 Instalación de XAMPP
+# 🚀 Instalación de XAMPP
 
 Sigue estos pasos para configurar el entorno:
 
@@ -21,7 +21,7 @@ Sigue estos pasos para configurar el entorno:
 
 Después de arranacar XAMPP, abre el Panel de Control de XAMPP e inicia los módulos de Apache y MySQL. En Linux, puedes usar la terminal para iniciar el servicio de lampp.
 
-💻 Despliegue y Pruebas Locales (Linux)
+# 💻 Despliegue y Pruebas Locales (Linux)
 
 Para probar la aplicación en un entorno Linux, sigue este procedimiento:
 
