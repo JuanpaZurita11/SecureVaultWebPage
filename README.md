@@ -1,8 +1,8 @@
-#🔒 Secure Vault Web
+# 🔒 Secure Vault Web
 
 Una aplicación web diseñada para la gestión segura de información, que incluye un sistema de autenticación, agenda de contactos y un almacén cifrado de archivos. El proyecto utiliza una arquitectura cliente-servidor local apoyada en tecnologías web estándar.
 
-#🛠️ Entorno de Desarrollo
+# 🛠️ Entorno de Desarrollo
 
 Para el desarrollo y pruebas locales de este proyecto se utiliza XAMPP, una distribución de Apache que integra MariaDB (MySQL), PHP y Perl. Este paquete emula un entorno de servidor web completo en una máquina local.
 
