@@ -41,7 +41,7 @@ Para que la aplicación funcion es indispensable configurar la base de datos. De
 + Crea una nueva base de datos llamada estrictamente: secure_vault.
 + Crea las siguientes tablas. A continuación se muestra el esquema relacional:
   
-```mermai
+```mermaid
 erDiagram
     usuarios {
         int id PK "AUTO_INCREMENT"
@@ -73,7 +73,7 @@ erDiagram
 
     usuarios ||--o{ contactos : "gestiona"
     usuarios ||--o{ archivos : "almacena"
-``
+```
 
 3. Carga de Datos de Prueba
 
